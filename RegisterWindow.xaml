@@ -1,0 +1,161 @@
+﻿<Window x:Class="BidUp_App.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BidUp_App.UserControls"
+        xmlns:viewModel="clr-namespace:BidUp_App.ViewModels"
+        mc:Ignorable="d"
+        Title="RegisterWindow" Height="600" Width="800" WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <viewModel:RegisterWindowViewModel/>
+    </Window.DataContext>
+
+    <Grid Background="#2c3e50">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Top Row with Application Name -->
+        <Border Grid.Row="0" Background="#1abc9c" Padding="10,5" CornerRadius="0,0,15,15">
+            <TextBlock Text="Register for BidUp"
+                       FontSize="36"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+        </Border>
+
+        <!-- Main Content Area with Two Columns -->
+        <Border Grid.Row="1"
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Center"
+                Background="#34495e" 
+                Width="700"
+                CornerRadius="15"
+                Margin="0,20,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- User Information Section (Left) -->
+                <StackPanel Grid.Column="0" Margin="20">
+                    <TextBlock Text="User Information" FontSize="18" FontWeight="Bold" Foreground="White" Margin="0,0,0,10" HorizontalAlignment="Center"/>
+
+                    <!-- Full Name -->
+                    <local:CustomTextBox Text="{Binding FullName}" 
+                                         Width="250" 
+                                         Height="40" 
+                                         Margin="0,10,0,10" 
+                                         Placeholder="Full Name" />
+
+                    <!-- Email -->
+                    <local:CustomTextBox Text="{Binding Email}" 
+                                         Width="250" 
+                                         Height="40" 
+                                         Margin="0,10,0,10" 
+                                         Placeholder="Email" />
+
+                    <!-- Birth Date -->
+                    <TextBlock Text="Birthday DD/MM/YY" FontSize="14" FontWeight="Bold" Foreground="White" Margin="30,0,0,10"/>
+                    <StackPanel Orientation="Horizontal" Width="250" Height="25" Margin="0,0,0,0">
+                        <!-- Days ComboBox -->
+                                    <ComboBox ItemsSource="{Binding Days}" 
+                          SelectedItem="{Binding BirthDay}" 
+                          Width="60" Margin="0,0,5,0" />
+
+                                    <!-- Months ComboBox -->
+                                    <ComboBox ItemsSource="{Binding Months}" 
+                          SelectedItem="{Binding BirthMonth}" 
+                          Width="80" Margin="0,0,5,0" />
+
+                                    <!-- Years ComboBox -->
+                                <ComboBox ItemsSource="{Binding Years}" 
+                          SelectedItem="{Binding BirthYear}" 
+                          Width="90" />
+                    </StackPanel>
+
+
+                    <!-- Password -->
+                    <local:CustomTextBox Text="{Binding Password, Mode=TwoWay}" 
+                                         Width="250" 
+                                         Height="40" 
+                                         Margin="0,10,0,10" 
+                                         Placeholder="Password" />
+
+                    <!-- Confirm Password -->
+                    <local:CustomTextBox Text="{Binding ConfirmPassword, Mode=TwoWay}" 
+                                         Width="250" 
+                                         Height="40" 
+                                         Margin="0,10,0,20" 
+                                         Placeholder="Confirm Password" />
+
+                    <!-- Role -->
+                    <ComboBox SelectedValue="{Binding Role}" 
+                          SelectedValuePath="Content"
+                          Width="250" 
+                          Height="40" 
+                          Margin="0,0,0,10" 
+                          Foreground="Gray" 
+                          VerticalContentAlignment="Center" 
+                          HorizontalContentAlignment="Left">
+                            <ComboBoxItem Content="Select Role" IsEnabled="False" />
+                            <ComboBoxItem Content="Bidder" />
+                            <ComboBoxItem Content="Admin" />
+                            <ComboBoxItem Content="Seller" />
+                    </ComboBox>
+
+                </StackPanel>
+
+                <!-- Card Information Section (Right) -->
+                <StackPanel Grid.Column="2" Margin="20">
+                    <TextBlock Text="Card Information" FontSize="18" FontWeight="Bold" Foreground="White" Margin="0,0,0,10" HorizontalAlignment="Center"/>
+
+                    <!-- Card Number -->
+                    <local:CustomTextBox Text="{Binding CardNumber}" 
+                                         Width="250" 
+                                         Height="40" 
+                                         Margin="0,10,0,10" 
+                                         Placeholder="Card Number" />
+
+                    <!-- Card Holder Name -->
+                    <local:CustomTextBox Text="{Binding CardHolderName}" 
+                                         Width="250" 
+                                         Height="40" 
+                                         Margin="0,10,0,10" 
+                                         Placeholder="Card Holder Name" />
+
+                    <!-- Expiry Date -->
+                    <local:CustomTextBox Text="{Binding ExpiryDate}" 
+                                         Width="250" 
+                                         Height="40" 
+                                         Margin="0,10,0,10" 
+                                         Placeholder="MM/YY" />
+
+                    <!-- CVV -->
+                    <local:CustomTextBox Text="{Binding CVV}" 
+                                         Width="250" 
+                                         Height="40" 
+                                         Margin="0,10,0,10" 
+                                         Placeholder="CVV" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Bottom Row for Register and Back Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <Border CornerRadius="20" Margin="0,10,37,0">
+                <Button Content="Register" Width="100" Height="45" Background="#1abc9c" Foreground="White" FontWeight="SemiBold" BorderThickness="0" HorizontalAlignment="Center" Command="{Binding RegisterCommand}" />
+            </Border>
+            <Border CornerRadius="20" Margin="0,10,0,0">
+                <Button Content="Back to Sign In" Width="100" Height="45" Background="#3498db" Foreground="White" FontWeight="SemiBold" BorderThickness="0" HorizontalAlignment="Center" Command="{Binding BackToSignInCommand}" />
+            </Border>
+        </StackPanel>
+    </Grid>
+</Window>
