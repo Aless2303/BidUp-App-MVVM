@@ -338,6 +338,7 @@
     <Compile Include="ViewModels\RegisterWindowViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SellerDashboardViewModel.cs" />
+    <Compile Include="ViewModels\ViewAuctionsSellerViewModel.cs" />
     <Compile Include="ViewModels\ViewAuctionsViewModel.cs" />
     <Compile Include="Views\Admin\AdminDashboard.xaml.cs">
       <DependentUpon>AdminDashboard.xaml</DependentUpon>

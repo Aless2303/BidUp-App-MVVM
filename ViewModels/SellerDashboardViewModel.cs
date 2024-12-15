@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using BidUp_App.Models.Users;
 using BidUp_App.Views.Bidder;
+using BidUp_App.Views.Seller;
 
 namespace BidUp_App.ViewModels
 {
@@ -135,16 +136,26 @@ namespace BidUp_App.ViewModels
 
         private void LoadAddAuctionView()
         {
-            //// Placeholder pentru AddAuctionViewModel
-            //var addAuctionViewModel = new AddAuctionViewModel(_seller.m_userID, _dbContext);
-            //CurrentView = addAuctionViewModel;
+            // Instanțiază AddAuctionViewModel cu ID-ul vânzătorului curent
+            var addAuctionViewModel = new AddAuctionViewModel(_seller.m_userID);
+
+            // Creează instanță AddAuctionControl și setează DataContext
+            var addAuctionControl = new AddAuctionControl(_seller.m_userID)
+            {
+                DataContext = addAuctionViewModel
+            };
+
+            // Actualizează CurrentView pentru a afișa AddAuctionControl
+            CurrentView = addAuctionControl;
         }
+
 
         private void LoadViewAuctionsView()
         {
-            //// Placeholder pentru ViewAuctionsViewModel
-            //var viewAuctionsViewModel = new ViewAuctionsViewModel(_seller.m_userID);
-            //CurrentView = viewAuctionsViewModel;
+            // Inițializează ViewAuctionsControl cu ViewModel-ul asociat
+            var viewAuctionsView = new BidUp_App.Views.Seller.ViewAuctionsControl(_seller.m_userID);
+            CurrentView = viewAuctionsView;
         }
+
     }
 }

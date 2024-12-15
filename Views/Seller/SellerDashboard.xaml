@@ -69,7 +69,9 @@
 
         <!-- Main Content Area -->
         <Border Background="#282846" Grid.Column="1" CornerRadius="15" Margin="10" Padding="10">
-            <ContentControl Content="{Binding CurrentView}"/>
+            <Viewbox Stretch="Fill">
+                <ContentControl Content="{Binding CurrentView}"/>
+            </Viewbox>
         </Border>
     </Grid>
 </Window>
