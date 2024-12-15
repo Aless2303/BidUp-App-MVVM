@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Height="450" Width="800"
              Background="#1e1e2f">
+
     <Border Background="#282846" CornerRadius="15" Padding="10" Margin="10">
         <Grid>
             <Grid.RowDefinitions>
@@ -11,7 +12,7 @@
             </Grid.RowDefinitions>
 
             <!-- Last Logs DataGrid -->
-            <DataGrid x:Name="LogsDataGrid" 
+            <DataGrid ItemsSource="{Binding Logs}" 
                       AutoGenerateColumns="False" 
                       Margin="0" 
                       CanUserAddRows="False" 
@@ -25,10 +26,15 @@
                       RowBackground="#2A2A3E"
                       AlternatingRowBackground="#3E3E5E">
                 <DataGrid.Columns>
+                    <!-- Timestamp Column -->
                     <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp}" Width="*" 
                                         HeaderStyle="{StaticResource MinimalisticHeaderStyle}" />
+
+                    <!-- Event Type Column -->
                     <DataGridTextColumn Header="Event Type" Binding="{Binding EventType}" Width="*" 
                                         HeaderStyle="{StaticResource MinimalisticHeaderStyle}" />
+
+                    <!-- Message Column -->
                     <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*" 
                                         HeaderStyle="{StaticResource MinimalisticHeaderStyle}">
                         <DataGridTextColumn.ElementStyle>
@@ -47,7 +53,11 @@
                     Grid.Row="1" 
                     HorizontalAlignment="Right" 
                     Margin="0,10,10,0" 
-                    Click="BackButton_Click"/>
+                    Command="{Binding BackCommand}"
+                    Background="#3E3E5E"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    BorderThickness="0"/>
         </Grid>
     </Border>
 </UserControl>

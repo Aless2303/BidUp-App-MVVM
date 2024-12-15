@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BidUp_App.Models.Loguri
 {
-    internal class Logs
+    public class Logs
     {
             public int LogID { get; set; }             // Cheia primară
             public DateTime Timestamp { get; set; }   // Timpul înregistrării evenimentului

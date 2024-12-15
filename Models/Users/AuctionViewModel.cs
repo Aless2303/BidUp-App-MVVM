@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BidUp_App.Models.Users
 {
@@ -18,6 +19,11 @@ namespace BidUp_App.Models.Users
         public string ProductImagePath { get; set; }
 
         public string RemainingTime { get; set; } // Timpul rămas
+
+        public bool IsClosed { get; set; } // Proprietate pentru starea licitației
+        public Visibility CloseButtonVisibility { get; set; } // Proprietate pentru buton
+        public string SellerName { get; set; }
+        public string LastBidderName { get; set; }
     }
 
 }
