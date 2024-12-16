@@ -11,7 +11,7 @@ namespace BidUp_App.ViewModels
     public class BidderDashboardViewModel : BaseViewModel
     {
         private readonly Bidder _bidder;
-        private readonly DataContextDataContext _dbContext;
+        private readonly BidUpEntities _dbContext;
         private readonly DispatcherTimer _walletUpdateTimer;
 
         private string _walletBalance;
@@ -22,11 +22,10 @@ namespace BidUp_App.ViewModels
             // Constructor pentru design-time
         }
 
-
         public BidderDashboardViewModel(Bidder bidder)
         {
             _bidder = bidder;
-            _dbContext = new DataContextDataContext();
+            _dbContext = new BidUpEntities();
 
             // Inițializăm comenzile
             ProfileCommand = new RelayCommand(LoadProfileView);
@@ -77,7 +76,6 @@ namespace BidUp_App.ViewModels
         {
             try
             {
-                _dbContext.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, _dbContext.Wallets);
                 var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _bidder.m_userID);
                 WalletBalance = wallet != null ? $"{wallet.Balance:C}" : "$0.00";
             }
@@ -92,7 +90,6 @@ namespace BidUp_App.ViewModels
         {
             try
             {
-                _dbContext.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, _dbContext.Wallets);
                 var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _bidder.m_userID);
 
                 if (wallet != null && decimal.TryParse(WalletBalance, System.Globalization.NumberStyles.Currency,
@@ -121,7 +118,6 @@ namespace BidUp_App.ViewModels
             CurrentView = profileView;
         }
 
-
         private void LoadNewAuctionsView()
         {
             // Creează ViewModel-ul pentru licitații noi
@@ -130,11 +126,9 @@ namespace BidUp_App.ViewModels
             // Creează View-ul și setează DataContext-ul
             var auctionsView = new ViewAuctionsControl(_bidder.m_userID);
 
-
             // Setează View-ul curent
             CurrentView = auctionsView;
         }
-
 
         private void LoadLastBidsView()
         {
@@ -150,7 +144,5 @@ namespace BidUp_App.ViewModels
             // Setează View-ul curent
             CurrentView = lastBidsView;
         }
-
-
     }
 }

@@ -8,7 +8,7 @@ namespace BidUp_App.ViewModels
 {
     public class LastBidsViewModel : BaseViewModel
     {
-        private readonly DataContextDataContext _dbContext;
+        private readonly BidUpEntities _dbContext;
         private readonly int _bidderId;
 
         public ObservableCollection<dynamic> Bids { get; set; }
@@ -19,7 +19,7 @@ namespace BidUp_App.ViewModels
         public LastBidsViewModel(int bidderId)
         {
             _bidderId = bidderId;
-            _dbContext = new DataContextDataContext();
+            _dbContext = new BidUpEntities();
             Bids = new ObservableCollection<dynamic>();
             LoadLastBids();
         }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Input;
 using System.Windows.Threading;
 using BidUp_App.Models.Users;
@@ -11,7 +11,7 @@ namespace BidUp_App.ViewModels
 {
     public class SellerDashboardViewModel : BaseViewModel
     {
-        private readonly DataContextDataContext _dbContext;
+        private readonly BidUpEntities _dbContext;
         private readonly Seller _seller;
         private readonly DispatcherTimer _walletUpdateTimer;
 
@@ -22,7 +22,7 @@ namespace BidUp_App.ViewModels
 
         public SellerDashboardViewModel(Seller seller)
         {
-            _dbContext = new DataContextDataContext();
+            _dbContext = new BidUpEntities();
             _seller = seller;
 
             WalletBalance = GetWalletBalance();
@@ -32,13 +32,13 @@ namespace BidUp_App.ViewModels
             AddAuctionCommand = new RelayCommand(LoadAddAuctionView);
             ViewAuctionsCommand = new RelayCommand(LoadViewAuctionsView);
 
-            // Inițializăm și încărcăm soldul inițial
+            // Load wallet balance
             LoadWalletBalance();
 
-            // Setăm view-ul implicit
+            // Set default view
             LoadProfileView();
 
-            // Inițializăm timer-ul pentru actualizarea soldului
+            // Start timer for wallet balance update
             _walletUpdateTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
@@ -51,12 +51,8 @@ namespace BidUp_App.ViewModels
         {
             try
             {
-                _dbContext.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, _dbContext.Wallets);
                 var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _seller.m_userID);
-
-                if (wallet != null && decimal.TryParse(WalletBalance, System.Globalization.NumberStyles.Currency,
-                    System.Globalization.CultureInfo.CurrentCulture, out var currentDisplayedBalance) &&
-                    wallet.Balance != currentDisplayedBalance)
+                if (wallet != null)
                 {
                     WalletBalance = $"{wallet.Balance:C}";
                 }
@@ -71,7 +67,6 @@ namespace BidUp_App.ViewModels
         {
             try
             {
-                _dbContext.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, _dbContext.Wallets);
                 var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _seller.m_userID);
                 WalletBalance = wallet != null ? $"{wallet.Balance:C}" : "$0.00";
             }
@@ -112,50 +107,37 @@ namespace BidUp_App.ViewModels
             return wallet != null ? $"{wallet.Balance:C}" : "$0.00";
         }
 
-        private void UpdateWalletBalance(object sender, EventArgs e)
-        {
-            var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _seller.m_userID);
-            if (wallet != null && wallet.Balance.ToString("C") != WalletBalance)
-            {
-                WalletBalance = $"{wallet.Balance:C}";
-            }
-        }
-
         private void LoadProfileView()
         {
-            // Creează ProfileViewModel și setează-l ca DataContext pentru ProfileView
+            // Initialize ProfileViewModel and ProfileView
             var profileViewModel = new ProfileViewModel(_seller, _dbContext);
             var profileView = new ProfileView
             {
                 DataContext = profileViewModel
             };
 
-            // Atribuie ProfileView ca View curent
             CurrentView = profileView;
         }
 
         private void LoadAddAuctionView()
         {
-            // Instanțiază AddAuctionViewModel cu ID-ul vânzătorului curent
+            // Initialize AddAuctionViewModel with seller's ID
             var addAuctionViewModel = new AddAuctionViewModel(_seller.m_userID);
 
-            // Creează instanță AddAuctionControl și setează DataContext
+            // Initialize AddAuctionControl and set DataContext
             var addAuctionControl = new AddAuctionControl(_seller.m_userID)
             {
                 DataContext = addAuctionViewModel
             };
 
-            // Actualizează CurrentView pentru a afișa AddAuctionControl
             CurrentView = addAuctionControl;
         }
 
-
         private void LoadViewAuctionsView()
         {
-            // Inițializează ViewAuctionsControl cu ViewModel-ul asociat
+            // Initialize ViewAuctionsControl for seller's auctions
             var viewAuctionsView = new BidUp_App.Views.Seller.ViewAuctionsControl(_seller.m_userID);
             CurrentView = viewAuctionsView;
         }
-
     }
 }

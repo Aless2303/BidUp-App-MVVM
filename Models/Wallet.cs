@@ -16,7 +16,7 @@ namespace BidUp_App.Models
 
         public decimal GetWalletBalance(int userId)
         {
-            using (var context = new DataContextDataContext())
+            using (var context = new BidUpEntities())
             {
                 var wallet = context.Wallets.FirstOrDefault(w => w.UserID == userId);
                 return wallet?.Balance ?? 0.00m;
@@ -26,7 +26,7 @@ namespace BidUp_App.Models
 
         public void AddFundsToWallet(int userId, decimal amount)
         {
-            using (var context = new DataContextDataContext())
+            using (var context = new BidUpEntities())
             {
                 var wallet = context.Wallets.FirstOrDefault(w => w.UserID == userId);
 
@@ -44,17 +44,17 @@ namespace BidUp_App.Models
                         Balance = amount,
                         LastUpdated = DateTime.Now
                     };
-                    context.Wallets.InsertOnSubmit(wallet);
+                    context.Wallets.Add(wallet);
                 }
 
-                context.SubmitChanges();
+                context.SaveChanges();
             }
         }
 
 
         public bool TakeFundsFromWallet(int userId, decimal amount)
         {
-            using (var context = new DataContextDataContext())
+            using (var context = new BidUpEntities())
             {
                 var wallet = context.Wallets.FirstOrDefault(w => w.UserID == userId);
 
@@ -62,7 +62,7 @@ namespace BidUp_App.Models
                 {
                     wallet.Balance -= amount;
                     wallet.LastUpdated = DateTime.Now;
-                    context.SubmitChanges();
+                    context.SaveChanges();
                     return true; // Tranzacția a reușit
                 }
 

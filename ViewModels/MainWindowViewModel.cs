@@ -1,4 +1,5 @@
-﻿using BidUp_App.Models.Users;
+﻿using BidUp_App.Models.Users; // Pentru clasele de utilizatori din aplicație
+using System.Data.Entity; // Entity Framework
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -10,7 +11,6 @@ namespace BidUp_App.ViewModels
         private string _email;
         private string _password;
         private string _role;
-
 
         public MainWindowViewModel()
         {
@@ -40,34 +40,32 @@ namespace BidUp_App.ViewModels
         public ICommand SignInCommand { get; }
         public ICommand SignUpCommand { get; }
 
-
-
         private void SignIn()
         {
             if (!ValidateInputs())
                 return;
 
-            using (var context = new DataContextDataContext())
+            using (var context = new BidUpEntities()) // Contextul Entity Framework
             {
                 // Hash the password
                 string passwordHash = HashPassword(Password);
 
-                // Retrieve the user from the database using LINQ
-                var dbUser = context.Users.SingleOrDefault(u => u.Email == Email && u.PasswordHash == passwordHash);
+                // Retrieve user from database
+                var dbUser = context.Users
+                    .SingleOrDefault(u => u.Email == Email && u.PasswordHash == passwordHash);
 
                 if (dbUser != null)
                 {
-                    // Check if the role is valid
+                    // Validare rol
                     if (string.IsNullOrEmpty(dbUser.Role) || !IsValidRole(dbUser.Role))
                     {
                         MessageBox.Show("Invalid role assigned to this user. Please contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
 
-                    // Create a User object based on the role
+                    // Creare utilizator pe baza rolului
                     var user = UserFactory.CreateUser(dbUser.Role);
 
-                    // Populate the User object
                     user.m_userID = dbUser.UserID;
                     user.m_fullName = dbUser.FullName;
                     user.m_email = dbUser.Email;
@@ -75,10 +73,11 @@ namespace BidUp_App.ViewModels
                     user.ProfilePicturePath = dbUser.ProfilePicturePath;
                     user.m_password = dbUser.PasswordHash;
 
-                    // If the user is a Bidder or Seller, load their Card information
+                    // Încarcă Card-ul pentru Bidder și Seller
                     if (user is Bidder || user is Seller)
                     {
-                        var card = context.Cards.SingleOrDefault(c => c.OwnerUserID == dbUser.UserID);
+                        var card = context.Cards
+                            .SingleOrDefault(c => c.OwnerUserID == dbUser.UserID);
 
                         if (card != null)
                         {
@@ -103,15 +102,15 @@ namespace BidUp_App.ViewModels
                         }
                     }
 
-                    // Display the appropriate dashboard based on the user's role
+                    // Afișează dashboard-ul potrivit rolului
                     user.displayDasboard();
 
-                    // Close the SignIn window
+                    // Închide fereastra curentă
                     CloseCurrentWindow();
                 }
                 else
                 {
-                    // Show error if the user is not found
+                    // Mesaj pentru autentificare eșuată
                     MessageBox.Show("Invalid email or password. Please try again.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -119,17 +118,13 @@ namespace BidUp_App.ViewModels
 
         private void SignUp()
         {
-            // Deschide fereastra RegisterWindow
             var registerWindow = new RegisterWindow();
             registerWindow.Show();
-
-            // Închide fereastra curentă
             CloseCurrentWindow();
         }
 
         private void CloseCurrentWindow()
         {
-            // Închide fereastra curentă (MainWindow)
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is MainWindow)
@@ -140,10 +135,8 @@ namespace BidUp_App.ViewModels
             }
         }
 
-
         private bool ValidateInputs()
         {
-            // Validate Email, Password, and Role
             if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
             {
                 MessageBox.Show("Please enter both email and password.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);

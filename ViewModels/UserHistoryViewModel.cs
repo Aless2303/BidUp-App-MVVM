@@ -10,7 +10,7 @@ namespace BidUp_App.ViewModels
     public class UserHistoryViewModel : BaseViewModel
     {
         private readonly BidUp_App.Models.Users.User _user;
-        private readonly DataContextDataContext _dbContext;
+        private readonly BidUpEntities _dbContext;
 
         // Proprietate pentru DataGrid
         public ObservableCollection<Logs> Logs { get; set; }
@@ -21,7 +21,7 @@ namespace BidUp_App.ViewModels
         public UserHistoryViewModel(BidUp_App.Models.Users.User user)
         {
             _user = user;
-            _dbContext = new DataContextDataContext();
+            _dbContext = new BidUpEntities();
             Logs = new ObservableCollection<Logs>();
 
             // Inițializare comandă Back
@@ -33,27 +33,32 @@ namespace BidUp_App.ViewModels
 
         private void LoadUserHistory()
         {
-            // Filtrăm log-urile pentru utilizatorul curent
-            var logs = _dbContext.Logs
+            // Preluăm toate log-urile din baza de date și aducem datele în memorie
+            var allLogs = _dbContext.Logs
+                .AsNoTracking() // Optimizăm performanța dacă nu actualizăm datele
+                .ToList();
+
+            // Aplicăm filtrul în memorie folosind LINQ to Objects
+            var filteredLogs = allLogs
                 .Where(log => log.DynamicData.Contains($"\"BidderID\":{_user.m_userID}")
                            || log.DynamicData.Contains($"\"SellerID\":{_user.m_userID}"))
                 .Select(log => new BidUp_App.Models.Loguri.Logs
                 {
                     LogID = log.LogID,
-                    Timestamp = (System.DateTime) log.Timestamp,
+                    Timestamp = (System.DateTime)log.Timestamp,
                     EventType = log.EventType,
                     Message = log.Message,
                     DynamicData = log.DynamicData
-                })
-                .ToList();
+                }).ToList();
 
             // Populăm colecția ObservableCollection
             Logs.Clear();
-            foreach (var log in logs)
+            foreach (var log in filteredLogs)
             {
                 Logs.Add(log);
             }
         }
+
 
 
         private void GoBack()

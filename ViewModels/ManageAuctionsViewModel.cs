@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data.Entity;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -11,14 +10,14 @@ namespace BidUp_App.ViewModels
 {
     public class ManageAuctionsViewModel : BaseViewModel
     {
-        private readonly DataContextDataContext _dbContext;
+        private readonly BidUpEntities _dbContext;
 
         public ObservableCollection<AuctionViewModel> Auctions { get; set; }
         public ICommand CloseAuctionCommand { get; }
 
         public ManageAuctionsViewModel()
         {
-            _dbContext = new DataContextDataContext();
+            _dbContext = new BidUpEntities();
             Auctions = new ObservableCollection<AuctionViewModel>();
 
             CloseAuctionCommand = new RelayCommand<int>(CloseAuction);
@@ -30,7 +29,7 @@ namespace BidUp_App.ViewModels
             Auctions.Clear();
 
             var auctions = _dbContext.Auctions
-                .ToList() // Preluăm datele pentru a procesa local
+                .ToList() // Preluăm datele pentru procesare locală
                 .Select(auction => new AuctionViewModel
                 {
                     AuctionID = auction.AuctionID,
@@ -42,15 +41,9 @@ namespace BidUp_App.ViewModels
                     StartTime = auction.StartTime,
                     EndTime = auction.EndTime,
                     IsClosed = auction.IsClosed == true || auction.EndTime <= DateTime.Now, // Verificăm timpul
-                    SellerName = _dbContext.Users
-                        .Where(user => user.UserID == auction.SellerID)
-                        .Select(user => user.FullName)
-                        .FirstOrDefault(),
+                    SellerName = auction.User?.FullName ?? "Unknown",
                     LastBidderName = auction.CurrentBidderID != null
-                        ? _dbContext.Users
-                            .Where(user => user.UserID == auction.CurrentBidderID)
-                            .Select(user => user.FullName)
-                            .FirstOrDefault()
+                        ? auction.User1?.FullName ?? "None"
                         : "None",
                     CloseButtonVisibility = (auction.IsClosed == true || auction.EndTime <= DateTime.Now)
                         ? Visibility.Collapsed
@@ -71,7 +64,7 @@ namespace BidUp_App.ViewModels
             if (auction != null && (auction.IsClosed == false || auction.IsClosed == null))
             {
                 auction.IsClosed = true;
-                _dbContext.SubmitChanges();
+                _dbContext.SaveChanges();
 
                 MessageBox.Show($"Auction '{auction.ProductName}' has been successfully closed!",
                                 "Success", MessageBoxButton.OK, MessageBoxImage.Information);

@@ -6,13 +6,13 @@ namespace BidUp_App.ViewModels
 {
     public class ViewAuctionsSellerViewModel : BaseViewModel
     {
-        private readonly DataContextDataContext _dbContext;
+        private readonly BidUpEntities _dbContext;
 
         public ObservableCollection<AuctionItemViewModel> Auctions { get; set; }
 
         public ViewAuctionsSellerViewModel(int sellerId)
         {
-            _dbContext = new DataContextDataContext();
+            _dbContext = new BidUpEntities();
             Auctions = new ObservableCollection<AuctionItemViewModel>();
 
             LoadAuctions(sellerId);

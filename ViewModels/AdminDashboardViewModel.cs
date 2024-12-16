@@ -9,7 +9,7 @@ namespace BidUp_App.ViewModels
     public class AdminDashboardViewModel : BaseViewModel
     {
         private readonly BidUp_App.Models.Users.User _admin;
-        private readonly DataContextDataContext _dbContext;
+        private readonly BidUpEntities _dbContext;
 
         private object _currentView;
 
@@ -18,7 +18,7 @@ namespace BidUp_App.ViewModels
         public AdminDashboardViewModel(BidUp_App.Models.Users.User admin)
         {
             _admin = admin;
-            _dbContext = new DataContextDataContext();
+            _dbContext = new BidUpEntities();
 
             // Inițializare comenzi pentru navigare
             ProfileCommand = new RelayCommand(LoadProfileView);

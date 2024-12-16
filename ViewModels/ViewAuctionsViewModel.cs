@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -11,7 +12,7 @@ namespace BidUp_App.ViewModels
 {
     public class ViewAuctionsViewModel : BaseViewModel
     {
-        private readonly DataContextDataContext _dbContext;
+        private readonly BidUpEntities _dbContext;
         private readonly int _currentBidderId;
         private readonly DispatcherTimer _timer;
         private readonly DispatcherTimer _notificationTimer;
@@ -23,15 +24,15 @@ namespace BidUp_App.ViewModels
 
         public ViewAuctionsViewModel()
         {
-            // Constructor pentru design-time (sau când nu ai currentBidderId)
-            _dbContext = new DataContextDataContext();
-            _currentBidderId = -1; // Sau un ID implicit
+            // Constructor pentru design-time
+            _dbContext = new BidUpEntities();
+            _currentBidderId = -1; // ID implicit
             Auctions = new ObservableCollection<AuctionViewModel>();
         }
 
         public ViewAuctionsViewModel(int currentBidderId)
         {
-            _dbContext = new DataContextDataContext();
+            _dbContext = new BidUpEntities();
             _currentBidderId = currentBidderId;
 
             Auctions = new ObservableCollection<AuctionViewModel>();
@@ -39,13 +40,10 @@ namespace BidUp_App.ViewModels
             RefreshCommand = new RelayCommand(RefreshAuctions);
             BidCommand = new RelayCommand<int>(BidOnAuction);
 
-
-
-
             LoadAuctions();
             CheckNotifications();
 
-            // Timer for updating auction time remaining
+            // Timer pentru actualizarea timpului rămas
             _timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
@@ -53,10 +51,10 @@ namespace BidUp_App.ViewModels
             _timer.Tick += Timer_Tick;
             _timer.Start();
 
-            // Timer for checking notifications
+            // Timer pentru notificări
             _notificationTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(3) // Check notifications every 3 seconds
+                Interval = TimeSpan.FromSeconds(3)
             };
             _notificationTimer.Tick += NotificationTimer_Tick;
             _notificationTimer.Start();
@@ -64,25 +62,29 @@ namespace BidUp_App.ViewModels
 
         private void LoadAuctions()
         {
-            _dbContext.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, _dbContext.Auctions);
-
-            var auctions = _dbContext.Auctions
+            // Preluăm toate licitațiile din baza de date care sunt active
+            var auctionsFromDb = _dbContext.Auctions
                 .Where(a => a.EndTime > DateTime.Now)
-                .Select(a => new AuctionViewModel
-                {
-                    AuctionID = a.AuctionID,
-                    ProductName = a.ProductName,
-                    Description = a.Description,
-                    StartingPrice = a.StartingPrice,
-                    CurrentPrice = a.CurrentPrice,
-                    StartTime = a.StartTime,
-                    EndTime = a.EndTime,
-                    ProductImagePath = a.ProductImagePath,
-                    RemainingTime = a.StartTime > DateTime.Now
-                        ? $"Start in: {GetRemainingTime(a.StartTime)}"
-                        : $"Time Left: {GetRemainingTime(a.EndTime)}"
-                }).ToList();
+                .AsNoTracking()
+                .ToList(); // Executăm query-ul aici pentru a aduce datele în memorie
 
+            // Transformăm datele din baza de date într-un ViewModel și aplicăm logica necesară
+            var auctions = auctionsFromDb.Select(a => new AuctionViewModel
+            {
+                AuctionID = a.AuctionID,
+                ProductName = a.ProductName,
+                Description = a.Description,
+                StartingPrice = a.StartingPrice,
+                CurrentPrice = a.CurrentPrice,
+                StartTime = a.StartTime,
+                EndTime = a.EndTime,
+                ProductImagePath = a.ProductImagePath,
+                RemainingTime = a.StartTime > DateTime.Now
+                    ? $"Start in: {GetRemainingTime(a.StartTime)}"
+                    : $"Time Left: {GetRemainingTime(a.EndTime)}"
+            }).ToList();
+
+            // Curățăm și actualizăm lista observabilă
             Auctions.Clear();
             foreach (var auction in auctions)
             {
@@ -90,10 +92,11 @@ namespace BidUp_App.ViewModels
             }
         }
 
+
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // Creează o listă temporară pentru a actualiza timpul rămas
-            var updatedAuctions = Auctions.Select(auction =>
+            // Actualizează timpul rămas pentru licitații
+            foreach (var auction in Auctions)
             {
                 if (auction.StartTime > DateTime.Now)
                 {
@@ -107,38 +110,23 @@ namespace BidUp_App.ViewModels
                 {
                     auction.RemainingTime = "Expired";
                 }
-                return auction;
-            }).ToList();
-
-            // Actualizează colecția Auctions și notifică UI-ul
-            Auctions.Clear();
-            foreach (var auction in updatedAuctions)
-            {
-                Auctions.Add(auction);
             }
-
-            // Notifică UI-ul că s-au făcut modificări
             OnPropertyChanged(nameof(Auctions));
         }
-
-
 
         private string GetRemainingTime(DateTime time)
         {
             var remainingTime = time - DateTime.Now;
-
-            if (remainingTime.TotalSeconds <= 0)
-            {
-                return "Expired";
-            }
-
-            return $"{remainingTime.Days}d {remainingTime.Hours}h {remainingTime.Minutes}m {remainingTime.Seconds}s";
+            return remainingTime.TotalSeconds <= 0
+                ? "Expired"
+                : $"{remainingTime.Days}d {remainingTime.Hours}h {remainingTime.Minutes}m {remainingTime.Seconds}s";
         }
-
 
         private void BidOnAuction(int auctionId)
         {
-            var selectedAuction = _dbContext.Auctions.FirstOrDefault(a => a.AuctionID == auctionId);
+            var selectedAuction = _dbContext.Auctions
+                .AsNoTracking()
+                .FirstOrDefault(a => a.AuctionID == auctionId);
 
             if (selectedAuction != null)
             {
@@ -148,7 +136,6 @@ namespace BidUp_App.ViewModels
                     return;
                 }
 
-                // Open the BidWindow (modal)
                 var bidWindow = new BidWindow(selectedAuction, _currentBidderId);
                 if (bidWindow.ShowDialog() == true)
                 {
@@ -180,7 +167,7 @@ namespace BidUp_App.ViewModels
 
             if (notifications.Any())
             {
-                _dbContext.SubmitChanges();
+                _dbContext.SaveChanges(); // Salvează notificările actualizate
             }
         }
 

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Navigation;
 
 namespace BidUp_App.ViewModels
 {
@@ -36,7 +35,7 @@ namespace BidUp_App.ViewModels
             {
                 if (value == "Select Role")
                 {
-                    _role = null; // Evităm selectarea implicită invalidă
+                    _role = null;
                 }
                 else
                 {
@@ -65,10 +64,9 @@ namespace BidUp_App.ViewModels
 
         public RegisterWindowViewModel()
         {
-            // Populate zile, luni și ani
             Days = new ObservableCollection<int>(Enumerable.Range(1, 31));
-            Months = new ObservableCollection<string>(DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12)); // Primele 12 luni
-            Years = new ObservableCollection<int>(Enumerable.Range(1900, DateTime.Now.Year - 1900 + 1)); // 1900 - Anul curent
+            Months = new ObservableCollection<string>(DateTimeFormatInfo.CurrentInfo.MonthNames.Take(12));
+            Years = new ObservableCollection<int>(Enumerable.Range(1900, DateTime.Now.Year - 1900 + 1));
 
             RegisterCommand = new RelayCommand(Register);
             BackToSignInCommand = new RelayCommand(BackToSignIn);
@@ -76,14 +74,12 @@ namespace BidUp_App.ViewModels
 
         private void Register()
         {
-            // Validare date
             if (!ValidateInputs())
                 return;
 
-            // Crearea utilizatorului
             try
             {
-                using (var context = new DataContextDataContext())
+                using (var context = new BidUpEntities()) // Entity Framework Context
                 {
                     var newUser = new User
                     {
@@ -96,8 +92,9 @@ namespace BidUp_App.ViewModels
                         CreatedAt = DateTime.Now
                     };
 
-                    context.Users.InsertOnSubmit(newUser);
-                    context.SubmitChanges();
+                    // Adaugă utilizator în context și salvează
+                    context.Users.Add(newUser);
+                    context.SaveChanges();
 
                     if (Role == "Bidder" || Role == "Seller")
                     {
@@ -111,8 +108,8 @@ namespace BidUp_App.ViewModels
                             OwnerUserID = newUser.UserID
                         };
 
-                        context.Cards.InsertOnSubmit(newCard);
-                        context.SubmitChanges();
+                        context.Cards.Add(newCard);
+                        context.SaveChanges();
                     }
 
                     MessageBox.Show("Registration successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -157,11 +154,9 @@ namespace BidUp_App.ViewModels
 
         private void BackToSignIn()
         {
-            // Deschide fereastra principală (Sign In)
             var mainWindow = new MainWindow();
             mainWindow.Show();
 
-            // Închide fereastra curentă
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is RegisterWindow)
@@ -171,7 +166,6 @@ namespace BidUp_App.ViewModels
                 }
             }
         }
-
 
         private string HashPassword(string password)
         {
