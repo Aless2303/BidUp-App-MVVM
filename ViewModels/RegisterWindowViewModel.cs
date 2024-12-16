@@ -143,14 +143,40 @@ namespace BidUp_App.ViewModels
                 return false;
             }
 
-            if (!Regex.IsMatch(CardNumber, @"^\d{13}$"))
+            if (!Regex.IsMatch(CardNumber, @"^\d{16}$"))
             {
-                MessageBox.Show("Card number must be exactly 13 digits.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Card number must be exactly 16 digits.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            // Validare pentru ExpiryDate în format MM/YY
+            if (!Regex.IsMatch(ExpiryDate, @"^(0[1-9]|1[0-2])\/\d{2}$") || !IsValidExpiryDate(ExpiryDate))
+            {
+                MessageBox.Show("Invalid Expiry Date format. Please use MM/YY.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
             return true;
         }
+
+        // Funcție pentru validarea datei de expirare
+        private bool IsValidExpiryDate(string expiryDate)
+        {
+            try
+            {
+                var parts = expiryDate.Split('/');
+                int month = int.Parse(parts[0]);
+                int year = int.Parse(parts[1]) + 2000; // Transformăm YY în YYYY
+
+                var expiry = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+                return expiry >= DateTime.Now;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         private void BackToSignIn()
         {
