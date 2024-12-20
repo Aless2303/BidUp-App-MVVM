@@ -31,6 +31,7 @@ namespace BidUp_App.ViewModels
             ProfileCommand = new RelayCommand(LoadProfileView);
             NewAuctionsCommand = new RelayCommand(LoadNewAuctionsView);
             LastBidsCommand = new RelayCommand(LoadLastBidsView);
+            CompletedAuctionsCommand = new RelayCommand(LoadCompletedAuctionsView);
 
             // Inițializăm și încărcăm soldul inițial
             LoadWalletBalance();
@@ -72,6 +73,8 @@ namespace BidUp_App.ViewModels
         public ICommand NewAuctionsCommand { get; }
         public ICommand LastBidsCommand { get; }
 
+        public ICommand CompletedAuctionsCommand { get; }
+
         private void LoadWalletBalance()
         {
             try
@@ -92,11 +95,17 @@ namespace BidUp_App.ViewModels
             {
                 var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _bidder.m_userID);
 
-                if (wallet != null && decimal.TryParse(WalletBalance, System.Globalization.NumberStyles.Currency,
-                    System.Globalization.CultureInfo.CurrentCulture, out var currentDisplayedBalance) &&
-                    wallet.Balance != currentDisplayedBalance)
+                if (wallet != null)
                 {
-                    WalletBalance = $"{wallet.Balance:C}";
+                    // Reîncarcă entitatea din baza de date
+                    _dbContext.Entry(wallet).Reload();
+
+                    if (decimal.TryParse(WalletBalance, System.Globalization.NumberStyles.Currency,
+                        System.Globalization.CultureInfo.CurrentCulture, out var currentDisplayedBalance) &&
+                        wallet.Balance != currentDisplayedBalance)
+                    {
+                        WalletBalance = $"{wallet.Balance:C}";
+                    }
                 }
             }
             catch (Exception ex)
@@ -104,6 +113,7 @@ namespace BidUp_App.ViewModels
                 Console.WriteLine($"Error updating wallet balance: {ex.Message}");
             }
         }
+
 
         private void LoadProfileView()
         {
@@ -143,6 +153,16 @@ namespace BidUp_App.ViewModels
 
             // Setează View-ul curent
             CurrentView = lastBidsView;
+        }
+
+
+        private void LoadCompletedAuctionsView()
+        {
+            var completedAuctionsView = new CompletedAuctionsView
+            {
+                DataContext = new CompletedAuctionsViewModel(_bidder.m_userID)
+            };
+            CurrentView = completedAuctionsView;
         }
     }
 }

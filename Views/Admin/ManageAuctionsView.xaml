@@ -38,42 +38,26 @@
                                 <TextBlock Text="End Time:" FontWeight="Bold" Margin="0,5,0,0"/>
                                 <TextBlock Text="{Binding EndTime, StringFormat={}{0:MM/dd/yyyy HH:mm}}" FontSize="14"/>
 
-                                <TextBlock Text="Starting Price:" FontWeight="Bold" Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding StartingPrice, StringFormat=C}" FontSize="14"/>
-
-                                <TextBlock Text="Current Bid:" FontWeight="Bold" Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding CurrentPrice, StringFormat=C}" FontSize="14"/>
+                                <TextBlock Text="Status:" FontWeight="Bold" Margin="0,5,0,0"/>
+                                <TextBlock Text="{Binding StatusDisplay}" FontSize="16" FontWeight="Bold"/>
                             </StackPanel>
 
-                            <!-- Right Column: Seller, Last Bidder, Status, and Button -->
+                            <!-- Right Column: Buttons -->
                             <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="10">
-                                <TextBlock Text="Seller:" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding SellerName}" FontSize="14"/>
-
-                                <TextBlock Text="Last Bidder:" FontWeight="Bold" Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding LastBidderName}" FontSize="14"/>
-
-                                <TextBlock FontSize="16" FontWeight="Bold" Margin="0,10,0,0">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value="Open"/>
-                                            <Setter Property="Foreground" Value="Green"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsClosed}" Value="True">
-                                                    <Setter Property="Text" Value="Closed"/>
-                                                    <Setter Property="Foreground" Value="Red"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                <StackPanel Visibility="{Binding ShowPendingActions, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <Button Content="Refuse" Background="Red" Foreground="White" Width="70"
+                                            Command="{Binding DataContext.RefuseAuctionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding AuctionID}" />
+                                    <Button Content="Accept" Background="Green" Foreground="White" Width="70" Margin="5,0,0,0"
+                                            Command="{Binding DataContext.AcceptAuctionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding AuctionID}" />
+                                </StackPanel>
 
                                 <Button Content="Close Auction" 
-                                        Width="100" Margin="0,10,0,0"
-                                        Background="#FF4CAF50" Foreground="White"
-                                        Visibility="{Binding CloseButtonVisibility}"
+                                        Visibility="{Binding ShowCloseButton, Converter={StaticResource BoolToVisibilityConverter}}"
+                                        Background="Green" Foreground="White" Width="100"
                                         Command="{Binding DataContext.CloseAuctionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding AuctionID}"/>
+                                        CommandParameter="{Binding AuctionID}" />
                             </StackPanel>
                         </Grid>
                     </Border>

@@ -62,13 +62,13 @@ namespace BidUp_App.ViewModels
 
         private void LoadAuctions()
         {
-            // Preluăm toate licitațiile din baza de date care sunt active
+            // Preluăm toate licitațiile ACCEPTATE din baza de date care sunt active
             var auctionsFromDb = _dbContext.Auctions
-                .Where(a => a.EndTime > DateTime.Now)
+                .Where(a => a.AuctionStatus == "Accepted" && a.EndTime > DateTime.Now && a.IsClosed == false) // Filtrare după Accepted
                 .AsNoTracking()
                 .ToList(); // Executăm query-ul aici pentru a aduce datele în memorie
 
-            // Transformăm datele din baza de date într-un ViewModel și aplicăm logica necesară
+            // Transformăm datele într-un ViewModel
             var auctions = auctionsFromDb.Select(a => new AuctionViewModel
             {
                 AuctionID = a.AuctionID,
@@ -93,10 +93,11 @@ namespace BidUp_App.ViewModels
         }
 
 
+
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // Actualizează timpul rămas pentru licitații
-            foreach (var auction in Auctions)
+            // Creează o listă nouă actualizată pentru Auctions
+            var updatedAuctions = Auctions.Select(auction =>
             {
                 if (auction.StartTime > DateTime.Now)
                 {
@@ -110,9 +111,17 @@ namespace BidUp_App.ViewModels
                 {
                     auction.RemainingTime = "Expired";
                 }
+                return auction;
+            }).ToList();
+
+            // Înlocuiește lista curentă
+            Auctions.Clear();
+            foreach (var auction in updatedAuctions)
+            {
+                Auctions.Add(auction);
             }
-            OnPropertyChanged(nameof(Auctions));
         }
+
 
         private string GetRemainingTime(DateTime time)
         {

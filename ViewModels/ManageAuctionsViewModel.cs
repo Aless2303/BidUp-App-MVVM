@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using BidUp_App.Models;
+using System.Data.Entity;
 using BidUp_App.Models.Users;
 
 namespace BidUp_App.ViewModels
@@ -14,6 +15,8 @@ namespace BidUp_App.ViewModels
 
         public ObservableCollection<AuctionViewModel> Auctions { get; set; }
         public ICommand CloseAuctionCommand { get; }
+        public ICommand RefuseAuctionCommand { get; }
+        public ICommand AcceptAuctionCommand { get; }
 
         public ManageAuctionsViewModel()
         {
@@ -21,6 +24,9 @@ namespace BidUp_App.ViewModels
             Auctions = new ObservableCollection<AuctionViewModel>();
 
             CloseAuctionCommand = new RelayCommand<int>(CloseAuction);
+            RefuseAuctionCommand = new RelayCommand<int>(RefuseAuction);
+            AcceptAuctionCommand = new RelayCommand<int>(AcceptAuction);
+
             LoadAuctions();
         }
 
@@ -28,9 +34,14 @@ namespace BidUp_App.ViewModels
         {
             Auctions.Clear();
 
-            var auctions = _dbContext.Auctions
-                .ToList() // Preluăm datele pentru procesare locală
-                .Select(auction => new AuctionViewModel
+            var auctionsFromDb = _dbContext.Auctions
+                .Include("User")    // Seller
+                .Include("User1")   // CurrentBidder
+                .ToList();
+
+            foreach (var auction in auctionsFromDb)
+            {
+                Auctions.Add(new AuctionViewModel
                 {
                     AuctionID = auction.AuctionID,
                     ProductName = auction.ProductName,
@@ -40,42 +51,52 @@ namespace BidUp_App.ViewModels
                     CurrentPrice = auction.CurrentPrice,
                     StartTime = auction.StartTime,
                     EndTime = auction.EndTime,
-                    IsClosed = auction.IsClosed == true || auction.EndTime <= DateTime.Now, // Verificăm timpul
-                    SellerName = auction.User?.FullName ?? "Unknown",
-                    LastBidderName = auction.CurrentBidderID != null
-                        ? auction.User1?.FullName ?? "None"
-                        : "None",
-                    CloseButtonVisibility = (auction.IsClosed == true || auction.EndTime <= DateTime.Now)
-                        ? Visibility.Collapsed
-                        : Visibility.Visible // Ascundem butonul dacă licitația este închisă
-                })
-                .ToList();
-
-            foreach (var auction in auctions)
-            {
-                Auctions.Add(auction);
+                    IsClosed = auction.IsClosed == true || auction.EndTime <= DateTime.Now,
+                    AuctionStatus = auction.AuctionStatus,
+                    SellerName = auction.User1?.FullName ?? "Unknown",
+                    LastBidderName = auction.User?.FullName ?? "None",
+                    ShowPendingActions = auction.AuctionStatus == "Pending",
+                    ShowCloseButton = auction.AuctionStatus == "Accepted" && !(auction.IsClosed ?? false),
+                    StatusDisplay = auction.AuctionStatus == "Refused" ? "Refused" :
+                                    (auction.IsClosed ?? false) ? "Closed" :
+                                    auction.AuctionStatus == "Accepted" ? "Open" : "Pending"
+                });
             }
         }
+
 
         private void CloseAuction(int auctionId)
         {
             var auction = _dbContext.Auctions.FirstOrDefault(a => a.AuctionID == auctionId);
-
-            if (auction != null && (auction.IsClosed == false || auction.IsClosed == null))
+            if (auction != null)
             {
                 auction.IsClosed = true;
                 _dbContext.SaveChanges();
-
-                MessageBox.Show($"Auction '{auction.ProductName}' has been successfully closed!",
-                                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-
                 LoadAuctions();
             }
-            else
+        }
+
+        private void RefuseAuction(int auctionId)
+        {
+            var auction = _dbContext.Auctions.FirstOrDefault(a => a.AuctionID == auctionId);
+            if (auction != null && auction.AuctionStatus == "Pending")
             {
-                MessageBox.Show("Auction not found or already closed.",
-                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                auction.AuctionStatus = "Refused";
+                _dbContext.SaveChanges();
+                LoadAuctions();
+            }
+        }
+
+        private void AcceptAuction(int auctionId)
+        {
+            var auction = _dbContext.Auctions.FirstOrDefault(a => a.AuctionID == auctionId);
+            if (auction != null && auction.AuctionStatus == "Pending")
+            {
+                auction.AuctionStatus = "Accepted";
+                _dbContext.SaveChanges();
+                LoadAuctions();
             }
         }
     }
+
 }

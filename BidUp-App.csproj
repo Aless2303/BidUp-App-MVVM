@@ -363,6 +363,7 @@
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\BidderDashboardViewModel.cs" />
     <Compile Include="ViewModels\BidWindowViewModel.cs" />
+    <Compile Include="ViewModels\CompletedAuctionsViewModel.cs" />
     <Compile Include="ViewModels\LastBidsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ManageAuctionsViewModel.cs" />
@@ -395,6 +396,9 @@
     </Compile>
     <Compile Include="Views\Bidder\BidWindow.xaml.cs">
       <DependentUpon>BidWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Bidder\CompletedAuctionsView.xaml.cs">
+      <DependentUpon>CompletedAuctionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Bidder\LastBids.xaml.cs">
       <DependentUpon>LastBids.xaml</DependentUpon>
@@ -462,6 +466,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Bidder\BidWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Bidder\CompletedAuctionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

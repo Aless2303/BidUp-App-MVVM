@@ -9,24 +9,25 @@
         Title="SignInWindow"
         Height="645"
         Width="465"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E2F">
 
     <Window.DataContext>
         <viewModel:MainWindowViewModel/>
     </Window.DataContext>
 
-    <Grid Background="#2c3e50">
+    <Grid Background="#1E1E2F">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Top Row with Background Color -->
-        <Border Grid.Row="0" Background="#1abc9c" Padding="10,5" CornerRadius="0,0,15,15">
+        <Border Grid.Row="0" Background="#5B84B1FF" Padding="10,5" CornerRadius="0,0,15,15">
             <TextBlock Text="BidUp"
                        FontSize="36"
                        FontWeight="Bold"
-                       Foreground="White"
+                       Foreground="#FCF6F5FF"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center" />
         </Border>
@@ -35,65 +36,60 @@
         <Border Grid.Row="1" 
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Center"
-                Background="#34495e" 
-                Width="320"
+                Background="#2C2C3E" 
+                Width="340"
                 Padding="20"
                 CornerRadius="15">
             <StackPanel>
                 <!-- Custom Email TextBox with Placeholder -->
                 <local:CustomTextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" 
-                                     Width="250"
-                                     Height="40"
+                                     Width="300"
+                                     Height="45"
                                      Margin="0,10,0,10"
                                      Placeholder="Enter your email" />
 
                 <!-- Custom Password TextBox -->
                 <local:CustomTextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" 
-                                     Width="250"
-                                     Height="40"
+                                     Width="300"
+                                     Height="45"
                                      Margin="0,10,0,10"
                                      Placeholder="Enter your password" />
 
                 <!-- ComboBox for Selecting Role -->
                 <ComboBox SelectedValue="{Binding Role, UpdateSourceTrigger=PropertyChanged}"
-                          Width="250"
-                          Height="40"
-                          Margin="0,10,0,10"
-                          Foreground="Gray"
-                          VerticalContentAlignment="Center"
-                          HorizontalContentAlignment="Left">
+                      Width="300"
+                      Height="45"
+                      Margin="0,10,0,10"
+                      Foreground="Gray"
+                      Style="{StaticResource RoundedComboBoxStyle}">
                     <ComboBoxItem Content="Select Role" IsEnabled="False" />
                     <ComboBoxItem Content="Bidder" />
                     <ComboBoxItem Content="Admin" />
                     <ComboBoxItem Content="Seller" />
                 </ComboBox>
 
+
                 <!-- Buttons for Log In and Sign Up -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
                     <!-- Log In Button -->
-                    <Border CornerRadius="20" Margin="10,0,10,0">
-                        <Button Content="Log In"
-                                Width="120"
-                                Height="45"
-                                Background="#1abc9c"
-                                Foreground="White"
-                                FontWeight="SemiBold"
-                                BorderThickness="0"
-                                Command="{Binding SignInCommand}" />
-                    </Border>
+                    <Button Content="Log In"
+                            Width="120"
+                            Height="45"
+                            Background="#5B84B1FF"
+                            Foreground="#FCF6F5FF"
+                            FontWeight="SemiBold"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Command="{Binding SignInCommand}" />
 
                     <!-- Sign Up Button -->
-                    <Border CornerRadius="20" Margin="10,0,10,0">
-                        <Button Content="Sign Up"
-                                Width="120"
-                                Height="45"
-                                Background="#3498db"
-                                Foreground="White"
-                                FontWeight="SemiBold"
-                                BorderThickness="0"
-                                Command="{Binding SignUpCommand}" />
-
-                    </Border>
+                    <Button Content="Sign Up"
+                            Width="120"
+                            Height="45"
+                            Background="#89ABE3FF"
+                            Foreground="#FCF6F5FF"
+                            FontWeight="SemiBold"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Command="{Binding SignUpCommand}" />
                 </StackPanel>
             </StackPanel>
         </Border>

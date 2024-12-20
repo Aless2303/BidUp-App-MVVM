@@ -32,6 +32,7 @@ namespace BidUp_App
         public System.DateTime EndTime { get; set; }
         public Nullable<bool> IsClosed { get; set; }
         public int ProductID { get; set; }
+        public string AuctionStatus { get; set; }
     
         public virtual User User { get; set; }
         public virtual Product Product { get; set; }

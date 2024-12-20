@@ -33,6 +33,11 @@
                 <Button Content="See Your Last Bids" 
                         Margin="0,10,0,0" 
                         Command="{Binding LastBidsCommand}"/>
+
+                <Button Content="See Your Auctions Completed" 
+                        Margin="0,10,0,0" 
+                        Command="{Binding CompletedAuctionsCommand}" />
+
             </StackPanel>
         </Border>
 

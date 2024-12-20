@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace BidUp_App.Models.Users
 {
-    public class AuctionViewModel
+    public class AuctionViewModel 
     {
         public int AuctionID { get; set; }
         public string ProductName { get; set; }
@@ -24,6 +24,17 @@ namespace BidUp_App.Models.Users
         public Visibility CloseButtonVisibility { get; set; } // Proprietate pentru buton
         public string SellerName { get; set; }
         public string LastBidderName { get; set; }
+
+        public string AuctionStatus { get; set; }
+
+
+        // Nou pentru afisare si vizibilitate
+        public string StatusDisplay { get; set; }
+        public bool ShowPendingActions { get; set; }
+        public bool ShowCloseButton { get; set; }
+
+
+
     }
 
 }

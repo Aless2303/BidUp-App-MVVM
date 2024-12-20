@@ -5,7 +5,10 @@
              xmlns:converters="clr-namespace:BidUp_App.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Stiluri -->
+
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+
         <Style x:Key="MinimalisticHeaderStyle" TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#3E3E5E"/>
             <Setter Property="Foreground" Value="#E1E1E6"/>
@@ -17,7 +20,71 @@
             <Setter Property="BorderThickness" Value="1,0,1,1"/>
         </Style>
 
-        <!-- BoolToVisibilityConverter -->
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <!-- Rounded Button Style -->
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="20" Background="{TemplateBinding Background}" Padding="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Rounded ComboBox Style -->
+        <Style x:Key="RoundedComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Border CornerRadius="20" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="1">
+                            <Grid>
+                                <ToggleButton Name="ToggleButton"
+                                      Width="{TemplateBinding ActualWidth}"
+                                      Height="{TemplateBinding ActualHeight}"
+                                      Background="Transparent"
+                                      BorderBrush="Transparent"
+                                      Focusable="False"
+                                      IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                      ClickMode="Press">
+                                    <ContentPresenter Content="{TemplateBinding SelectionBoxItem}" 
+                                              Margin="10,0,0,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" />
+                                </ToggleButton>
+                                <Popup Name="Popup"
+                               Placement="Bottom"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Slide">
+                                    <Border CornerRadius="10"
+                                    Background="#F3F3F3"
+                                    BorderBrush="#5B84B1FF"
+                                    BorderThickness="1">
+                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True"
+                                                KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="Gray" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="5,2" />
+        </Style>
+
+
     </Application.Resources>
 </Application>

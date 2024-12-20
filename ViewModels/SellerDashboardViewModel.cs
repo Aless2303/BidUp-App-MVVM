@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Input;
 using System.Windows.Threading;
 using BidUp_App.Models.Users;
@@ -52,9 +53,18 @@ namespace BidUp_App.ViewModels
             try
             {
                 var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _seller.m_userID);
+
                 if (wallet != null)
                 {
-                    WalletBalance = $"{wallet.Balance:C}";
+                    // Reîncarcă entitatea din baza de date
+                    _dbContext.Entry(wallet).Reload();
+
+                    if (decimal.TryParse(WalletBalance, System.Globalization.NumberStyles.Currency,
+                        System.Globalization.CultureInfo.CurrentCulture, out var currentDisplayedBalance) &&
+                        wallet.Balance != currentDisplayedBalance)
+                    {
+                        WalletBalance = $"{wallet.Balance:C}";
+                    }
                 }
             }
             catch (Exception ex)

@@ -133,7 +133,8 @@ namespace BidUp_App.ViewModels
                     SellerID = _sellerId,
                     StartTime = StartTime.Value,
                     EndTime = EndTime.Value,
-                    IsClosed = false
+                    IsClosed = false,
+                    AuctionStatus = "Pending"
                 };
 
                 _dbContext.Auctions.Add(newAuction);
