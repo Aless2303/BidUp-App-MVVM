@@ -137,9 +137,24 @@ namespace BidUp_App.ViewModels
                 return false;
             }
 
+            using (var context = new BidUpEntities())
+            {
+                if (context.Users.Any(u => u.Email == Email))
+                {
+                    MessageBox.Show("Email already exists in the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+            }
+
             if (Password != ConfirmPassword)
             {
                 MessageBox.Show("Passwords do not match. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            if (!Regex.IsMatch(Password, @"^(?=.[a-z])(?=.[A-Z])(?=.*\d).{6,}$"))
+            {
+                MessageBox.Show("Password must contain at least one lowercase letter, one uppercase letter, one digit, and be at least 6 characters long.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
@@ -149,8 +164,13 @@ namespace BidUp_App.ViewModels
                 return false;
             }
 
-            // Validare pentru ExpiryDate în format MM/YY
-            if (!Regex.IsMatch(ExpiryDate, @"^(0[1-9]|1[0-2])\/\d{2}$") || !IsValidExpiryDate(ExpiryDate))
+            if (!Regex.IsMatch(CVV, @"^\d{3}$"))
+            {
+                MessageBox.Show("CVV must be exactly 3 digits.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            if (!Regex.IsMatch(ExpiryDate, @"^(0[1-9]|1[0-2])/\d{2}$") || !IsValidExpiryDate(ExpiryDate))
             {
                 MessageBox.Show("Invalid Expiry Date format. Please use MM/YY.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -158,6 +178,7 @@ namespace BidUp_App.ViewModels
 
             return true;
         }
+
 
         // Funcție pentru validarea datei de expirare
         private bool IsValidExpiryDate(string expiryDate)

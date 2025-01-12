@@ -30,47 +30,69 @@
 
         <!-- Main Content (Auctions List) -->
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10" Grid.Row="1">
-            <ItemsControl ItemsSource="{Binding Auctions}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Margin="5" Padding="10" Background="White">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Image Source="{Binding ProductImagePath}" 
-                                       Width="100" 
-                                       Height="100" 
-                                       Margin="5" 
-                                       Stretch="UniformToFill"/>
-                                <StackPanel Margin="10" Width="400">
-                                    <TextBlock Text="{Binding ProductName}" FontSize="16" FontWeight="Bold" Foreground="#34495E"/>
-                                    <TextBlock Text="{Binding Description}" FontSize="14" Foreground="Gray" TextWrapping="Wrap" Margin="0,5,0,5"/>
-                                    <TextBlock Text="Start Time: " FontWeight="Bold" Foreground="#34495E">
-                                        <Run Text="{Binding StartTime, StringFormat={}{0:MM/dd/yyyy HH:mm}}"/>
-                                    </TextBlock>
-                                    <TextBlock Text="End Time: " FontWeight="Bold" Foreground="#34495E">
-                                        <Run Text="{Binding EndTime, StringFormat={}{0:MM/dd/yyyy HH:mm}}"/>
-                                    </TextBlock>
-                                    <TextBlock Text="{Binding RemainingTime}" FontSize="14" Foreground="Gray"/>
+            <Grid>
+                <!-- Placeholder când lista este goală -->
+                <TextBlock Text="No available auctions at the moment."
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="16"
+                   FontWeight="SemiBold"
+                   Foreground="Gray">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Auctions.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Lista de licitații -->
+                <ItemsControl ItemsSource="{Binding Auctions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Margin="5" Padding="10" Background="White">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Image Source="{Binding ProductImagePath}" 
+                                   Width="100" 
+                                   Height="100" 
+                                   Margin="5" 
+                                   Stretch="UniformToFill"/>
+                                    <StackPanel Margin="10" Width="400">
+                                        <TextBlock Text="{Binding ProductName}" FontSize="16" FontWeight="Bold" Foreground="#34495E"/>
+                                        <TextBlock Text="{Binding Description}" FontSize="14" Foreground="Gray" TextWrapping="Wrap" Margin="0,5,0,5"/>
+                                        <TextBlock Text="Start Time: " FontWeight="Bold" Foreground="#34495E">
+                                    <Run Text="{Binding StartTime, StringFormat={}{0:MM/dd/yyyy HH:mm}}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="End Time: " FontWeight="Bold" Foreground="#34495E">
+                                    <Run Text="{Binding EndTime, StringFormat={}{0:MM/dd/yyyy HH:mm}}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding RemainingTime}" FontSize="14" Foreground="Gray"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="10" Width="150">
+                                        <TextBlock Text="Start Price:" FontWeight="Bold" Foreground="#34495E"/>
+                                        <TextBlock Text="{Binding StartingPrice}" FontSize="14" Foreground="Gray"/>
+                                        <TextBlock Text="Current Bid:" FontWeight="Bold" Foreground="#34495E" Margin="0,10,0,0"/>
+                                        <TextBlock Text="{Binding CurrentPrice}" FontSize="14" Foreground="Gray"/>
+                                    </StackPanel>
+                                    <Button Content="Bid"
+                                    Width="100"
+                                    Height="40"
+                                    Background="#3498DB"
+                                    Foreground="White"
+                                    FontWeight="SemiBold"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DataContext.BidCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                    CommandParameter="{Binding AuctionID}"/>
                                 </StackPanel>
-                                <StackPanel Margin="10" Width="150">
-                                    <TextBlock Text="Start Price:" FontWeight="Bold" Foreground="#34495E"/>
-                                    <TextBlock Text="{Binding StartingPrice}" FontSize="14" Foreground="Gray"/>
-                                    <TextBlock Text="Current Bid:" FontWeight="Bold" Foreground="#34495E" Margin="0,10,0,0"/>
-                                    <TextBlock Text="{Binding CurrentPrice}" FontSize="14" Foreground="Gray"/>
-                                </StackPanel>
-                                <Button Content="Bid"
-                                        Width="100"
-                                        Height="40"
-                                        Background="#3498DB"
-                                        Foreground="White"
-                                        FontWeight="SemiBold"
-                                        VerticalAlignment="Center"
-                                        Command="{Binding DataContext.BidCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                        CommandParameter="{Binding AuctionID}"/>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
         </ScrollViewer>
 
         <!-- Sticky Refresh Button -->

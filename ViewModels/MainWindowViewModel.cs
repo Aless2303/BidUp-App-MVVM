@@ -56,12 +56,22 @@ namespace BidUp_App.ViewModels
 
                 if (dbUser != null)
                 {
+
                     // Validare rol
                     if (string.IsNullOrEmpty(dbUser.Role) || !IsValidRole(dbUser.Role))
                     {
                         MessageBox.Show("Invalid role assigned to this user. Please contact support.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
+
+
+                    // Validare rol selectat din ComboBox cu cel din baza de date
+                    if (dbUser.Role != Role)
+                    {
+                        MessageBox.Show($"Selected role '{Role}' '{dbUser.Role}'does not match the role assigned to this user in the database.", "Role Mismatch", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
 
                     // Creare utilizator pe baza rolului
                     var user = UserFactory.CreateUser(dbUser.Role);

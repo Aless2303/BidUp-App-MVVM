@@ -79,7 +79,7 @@ namespace BidUp_App.ViewModels
         private void RefuseAuction(int auctionId)
         {
             var auction = _dbContext.Auctions.FirstOrDefault(a => a.AuctionID == auctionId);
-            if (auction != null && auction.AuctionStatus == "Pending")
+            if (auction != null && auction.AuctionStatus== "Pending")
             {
                 auction.AuctionStatus = "Refused";
                 _dbContext.SaveChanges();

@@ -48,10 +48,10 @@ namespace BidUp_App.ViewModels
         private void LoadProfileView()
         {
             // Creează ProfileViewModel pentru Admin
-            var profileViewModel = new ProfileViewModel(_admin, _dbContext);
+            var profileViewModel = new AdminProfileViewModel(_admin);
 
             // Creează AdminProfileView și setează DataContext
-            var profileView = new ProfileView
+            var profileView = new AdminProfileView
             {
                 DataContext = profileViewModel
             };

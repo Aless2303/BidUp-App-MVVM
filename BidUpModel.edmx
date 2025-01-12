@@ -4,13 +4,13 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="BidUpModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="BidUp_AppModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Auctions">
           <Key>
             <PropertyRef Name="AuctionID" />
           </Key>
           <Property Name="AuctionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ProductName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ProductName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="ProductImagePath" Type="nvarchar(max)" />
           <Property Name="StartingPrice" Type="float" Nullable="false" />
@@ -21,19 +21,19 @@
           <Property Name="EndTime" Type="datetime" Nullable="false" />
           <Property Name="IsClosed" Type="bit" />
           <Property Name="ProductID" Type="int" Nullable="false" />
-          <Property Name="AuctionStatus" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="AuctionStatus" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="Cards">
           <Key>
             <PropertyRef Name="CardID" />
           </Key>
           <Property Name="CardID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CardNumber" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="CardHolderName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CardNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CardHolderName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="ExpiryDate" Type="date" Nullable="false" />
-          <Property Name="CVV" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="CVV" Type="nvarchar" MaxLength="5" Nullable="false" />
           <Property Name="OwnerUserID" Type="int" />
-          <Property Name="Balance" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Balance" Type="decimal" Precision="18" Scale="0" />
         </EntityType>
         <EntityType Name="Logs">
           <Key>
@@ -61,10 +61,10 @@
             <PropertyRef Name="ProductID" />
           </Key>
           <Property Name="ProductID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ProductName" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="Description" Type="text" />
-          <Property Name="ProductImagePath" Type="text" />
-          <Property Name="Category" Type="varchar" MaxLength="50" />
+          <Property Name="ProductName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="ProductImagePath" Type="nvarchar(max)" />
+          <Property Name="Category" Type="nvarchar" MaxLength="50" />
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
           <Property Name="SellerID" Type="int" Nullable="false" />
         </EntityType>
@@ -73,12 +73,12 @@
             <PropertyRef Name="UserID" />
           </Key>
           <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FullName" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="Email" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="PasswordHash" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Role" Type="varchar" MaxLength="20" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Role" Type="nvarchar" MaxLength="20" />
           <Property Name="BirthDate" Type="date" Nullable="false" />
-          <Property Name="ProfilePicturePath" Type="varchar" MaxLength="500" />
+          <Property Name="ProfilePicturePath" Type="nvarchar" MaxLength="500" />
           <Property Name="CreatedAt" Type="datetime" />
         </EntityType>
         <EntityType Name="Wallets">
@@ -90,7 +90,7 @@
           <Property Name="Balance" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="LastUpdated" Type="datetime" Nullable="false" />
         </EntityType>
-        <Association Name="FK__Auctions__Curren__6FE99F9F">
+        <Association Name="FK__Auctions__Curren__4D94879B">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Auctions" Type="Self.Auctions" Multiplicity="*" />
           <ReferentialConstraint>
@@ -102,7 +102,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Auctions__Produc__71D1E811">
+        <Association Name="FK__Auctions__Produc__4E88ABD4">
           <End Role="Products" Type="Self.Products" Multiplicity="1" />
           <End Role="Auctions" Type="Self.Auctions" Multiplicity="*" />
           <ReferentialConstraint>
@@ -114,7 +114,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Auctions__Seller__70DDC3D8">
+        <Association Name="FK__Auctions__Seller__4CA06362">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="Auctions" Type="Self.Auctions" Multiplicity="*" />
           <ReferentialConstraint>
@@ -126,7 +126,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Cards__OwnerUser__4BAC3F29">
+        <Association Name="FK__Cards__OwnerUser__440B1D61">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -140,7 +140,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Products__Seller__5629CD9C">
+        <Association Name="FK__Products__Seller__47DBAE45">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="Products" Type="Self.Products" Multiplicity="*" />
           <ReferentialConstraint>
@@ -148,6 +148,20 @@
               <PropertyRef Name="UserID" />
             </Principal>
             <Dependent Role="Products">
+              <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Auctions_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Auctions" Type="Self.Auctions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Auctions">
               <PropertyRef Name="SellerID" />
             </Dependent>
           </ReferentialConstraint>
@@ -188,7 +202,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="BidUpModelStoreContainer">
+        <EntityContainer Name="BidUp_AppModelStoreContainer">
           <EntitySet Name="Auctions" EntityType="Self.Auctions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cards" EntityType="Self.Cards" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Logs" EntityType="Self.Logs" Schema="dbo" store:Type="Tables" />
@@ -196,25 +210,29 @@
           <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Wallets" EntityType="Self.Wallets" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Auctions__Curren__6FE99F9F" Association="Self.FK__Auctions__Curren__6FE99F9F">
+          <AssociationSet Name="FK__Auctions__Curren__4D94879B" Association="Self.FK__Auctions__Curren__4D94879B">
             <End Role="Users" EntitySet="Users" />
             <End Role="Auctions" EntitySet="Auctions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Auctions__Produc__71D1E811" Association="Self.FK__Auctions__Produc__71D1E811">
+          <AssociationSet Name="FK__Auctions__Produc__4E88ABD4" Association="Self.FK__Auctions__Produc__4E88ABD4">
             <End Role="Products" EntitySet="Products" />
             <End Role="Auctions" EntitySet="Auctions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Auctions__Seller__70DDC3D8" Association="Self.FK__Auctions__Seller__70DDC3D8">
+          <AssociationSet Name="FK__Auctions__Seller__4CA06362" Association="Self.FK__Auctions__Seller__4CA06362">
             <End Role="Users" EntitySet="Users" />
             <End Role="Auctions" EntitySet="Auctions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Cards__OwnerUser__4BAC3F29" Association="Self.FK__Cards__OwnerUser__4BAC3F29">
+          <AssociationSet Name="FK__Cards__OwnerUser__440B1D61" Association="Self.FK__Cards__OwnerUser__440B1D61">
             <End Role="Users" EntitySet="Users" />
             <End Role="Cards" EntitySet="Cards" />
           </AssociationSet>
-          <AssociationSet Name="FK__Products__Seller__5629CD9C" Association="Self.FK__Products__Seller__5629CD9C">
+          <AssociationSet Name="FK__Products__Seller__47DBAE45" Association="Self.FK__Products__Seller__47DBAE45">
             <End Role="Users" EntitySet="Users" />
             <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Auctions_Users" Association="Self.FK_Auctions_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Auctions" EntitySet="Auctions" />
           </AssociationSet>
           <AssociationSet Name="FK_Notifications_Auctions" Association="Self.FK_Notifications_Auctions">
             <End Role="Auctions" EntitySet="Auctions" />
@@ -229,17 +247,16 @@
             <End Role="Wallets" EntitySet="Wallets" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="BidUpModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="BidUp_AppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Auction">
           <Key>
             <PropertyRef Name="AuctionID" />
           </Key>
           <Property Name="AuctionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProductName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProductName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ProductImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="StartingPrice" Type="Double" Nullable="false" />
@@ -250,24 +267,25 @@
           <Property Name="EndTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsClosed" Type="Boolean" />
           <Property Name="ProductID" Type="Int32" Nullable="false" />
-          <Property Name="AuctionStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Auctions__Curren__6FE99F9F" FromRole="Auctions" ToRole="Users" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__Auctions__Produc__71D1E811" FromRole="Auctions" ToRole="Products" />
-          <NavigationProperty Name="User1" Relationship="Self.FK__Auctions__Seller__70DDC3D8" FromRole="Auctions" ToRole="Users" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Auctions__Curren__4D94879B" FromRole="Auctions" ToRole="Users" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__Auctions__Produc__4E88ABD4" FromRole="Auctions" ToRole="Products" />
+          <NavigationProperty Name="User1" Relationship="Self.FK__Auctions__Seller__4CA06362" FromRole="Auctions" ToRole="Users" />
+          <NavigationProperty Name="User2" Relationship="Self.FK_Auctions_Users" FromRole="Auctions" ToRole="Users" />
           <NavigationProperty Name="Notifications" Relationship="Self.FK_Notifications_Auctions" FromRole="Auctions" ToRole="Notifications" />
+          <Property Name="AuctionStatus" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Card">
           <Key>
             <PropertyRef Name="CardID" />
           </Key>
           <Property Name="CardID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CardNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="CardHolderName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CardNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CardHolderName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ExpiryDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="CVV" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CVV" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="OwnerUserID" Type="Int32" />
-          <Property Name="Balance" Type="Decimal" Precision="18" Scale="2" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Cards__OwnerUser__4BAC3F29" FromRole="Cards" ToRole="Users" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Cards__OwnerUser__440B1D61" FromRole="Cards" ToRole="Users" />
         </EntityType>
         <EntityType Name="Log">
           <Key>
@@ -297,32 +315,33 @@
             <PropertyRef Name="ProductID" />
           </Key>
           <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProductName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="ProductImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ProductName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="SellerID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Auctions" Relationship="Self.FK__Auctions__Produc__71D1E811" FromRole="Products" ToRole="Auctions" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Products__Seller__5629CD9C" FromRole="Products" ToRole="Users" />
+          <NavigationProperty Name="Auctions" Relationship="Self.FK__Auctions__Produc__4E88ABD4" FromRole="Products" ToRole="Auctions" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Products__Seller__47DBAE45" FromRole="Products" ToRole="Users" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserID" />
           </Key>
           <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="PasswordHash" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="BirthDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="ProfilePicturePath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ProfilePicturePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Auctions" Relationship="Self.FK__Auctions__Curren__6FE99F9F" FromRole="Users" ToRole="Auctions" />
-          <NavigationProperty Name="Auctions1" Relationship="Self.FK__Auctions__Seller__70DDC3D8" FromRole="Users" ToRole="Auctions" />
-          <NavigationProperty Name="Cards" Relationship="Self.FK__Cards__OwnerUser__4BAC3F29" FromRole="Users" ToRole="Cards" />
+          <NavigationProperty Name="Auctions" Relationship="Self.FK__Auctions__Curren__4D94879B" FromRole="Users" ToRole="Auctions" />
+          <NavigationProperty Name="Auctions1" Relationship="Self.FK__Auctions__Seller__4CA06362" FromRole="Users" ToRole="Auctions" />
+          <NavigationProperty Name="Auctions2" Relationship="Self.FK_Auctions_Users" FromRole="Users" ToRole="Auctions" />
+          <NavigationProperty Name="Cards" Relationship="Self.FK__Cards__OwnerUser__440B1D61" FromRole="Users" ToRole="Cards" />
           <NavigationProperty Name="Notifications" Relationship="Self.FK_Notifications_Bidders" FromRole="Users" ToRole="Notifications" />
-          <NavigationProperty Name="Products" Relationship="Self.FK__Products__Seller__5629CD9C" FromRole="Users" ToRole="Products" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__Products__Seller__47DBAE45" FromRole="Users" ToRole="Products" />
           <NavigationProperty Name="Wallets" Relationship="Self.FK_Wallet_User" FromRole="Users" ToRole="Wallets" />
         </EntityType>
         <EntityType Name="Wallet">
@@ -335,7 +354,7 @@
           <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="User" Relationship="Self.FK_Wallet_User" FromRole="Wallets" ToRole="Users" />
         </EntityType>
-        <Association Name="FK__Auctions__Curren__6FE99F9F">
+        <Association Name="FK__Auctions__Curren__4D94879B">
           <End Role="Users" Type="Self.User" Multiplicity="0..1" />
           <End Role="Auctions" Type="Self.Auction" Multiplicity="*" />
           <ReferentialConstraint>
@@ -347,7 +366,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Auctions__Produc__71D1E811">
+        <Association Name="FK__Auctions__Produc__4E88ABD4">
           <End Role="Products" Type="Self.Product" Multiplicity="1" />
           <End Role="Auctions" Type="Self.Auction" Multiplicity="*" />
           <ReferentialConstraint>
@@ -359,8 +378,22 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Auctions__Seller__70DDC3D8">
+        <Association Name="FK__Auctions__Seller__4CA06362">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Auctions" Type="Self.Auction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Auctions">
+              <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Auctions_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Auctions" Type="Self.Auction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
@@ -383,7 +416,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Cards__OwnerUser__4BAC3F29">
+        <Association Name="FK__Cards__OwnerUser__440B1D61">
           <End Role="Users" Type="Self.User" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -409,7 +442,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Products__Seller__5629CD9C">
+        <Association Name="FK__Products__Seller__47DBAE45">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
           <End Role="Products" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -441,15 +474,19 @@
           <EntitySet Name="Products" EntityType="Self.Product" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="Wallets" EntityType="Self.Wallet" />
-          <AssociationSet Name="FK__Auctions__Curren__6FE99F9F" Association="Self.FK__Auctions__Curren__6FE99F9F">
+          <AssociationSet Name="FK__Auctions__Curren__4D94879B" Association="Self.FK__Auctions__Curren__4D94879B">
             <End Role="Users" EntitySet="Users" />
             <End Role="Auctions" EntitySet="Auctions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Auctions__Produc__71D1E811" Association="Self.FK__Auctions__Produc__71D1E811">
+          <AssociationSet Name="FK__Auctions__Produc__4E88ABD4" Association="Self.FK__Auctions__Produc__4E88ABD4">
             <End Role="Products" EntitySet="Products" />
             <End Role="Auctions" EntitySet="Auctions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Auctions__Seller__70DDC3D8" Association="Self.FK__Auctions__Seller__70DDC3D8">
+          <AssociationSet Name="FK__Auctions__Seller__4CA06362" Association="Self.FK__Auctions__Seller__4CA06362">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Auctions" EntitySet="Auctions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Auctions_Users" Association="Self.FK_Auctions_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="Auctions" EntitySet="Auctions" />
           </AssociationSet>
@@ -457,7 +494,7 @@
             <End Role="Auctions" EntitySet="Auctions" />
             <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
-          <AssociationSet Name="FK__Cards__OwnerUser__4BAC3F29" Association="Self.FK__Cards__OwnerUser__4BAC3F29">
+          <AssociationSet Name="FK__Cards__OwnerUser__440B1D61" Association="Self.FK__Cards__OwnerUser__440B1D61">
             <End Role="Users" EntitySet="Users" />
             <End Role="Cards" EntitySet="Cards" />
           </AssociationSet>
@@ -465,7 +502,7 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
-          <AssociationSet Name="FK__Products__Seller__5629CD9C" Association="Self.FK__Products__Seller__5629CD9C">
+          <AssociationSet Name="FK__Products__Seller__47DBAE45" Association="Self.FK__Products__Seller__47DBAE45">
             <End Role="Users" EntitySet="Users" />
             <End Role="Products" EntitySet="Products" />
           </AssociationSet>
@@ -479,10 +516,11 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="BidUpModelStoreContainer" CdmEntityContainer="BidUpEntities">
+        <EntityContainerMapping StorageEntityContainer="BidUp_AppModelStoreContainer" CdmEntityContainer="BidUpEntities">
           <EntitySetMapping Name="Auctions">
-            <EntityTypeMapping TypeName="BidUpModel.Auction">
+            <EntityTypeMapping TypeName="BidUp_AppModel.Auction">
               <MappingFragment StoreEntitySet="Auctions">
+                <ScalarProperty Name="AuctionStatus" ColumnName="AuctionStatus" />
                 <ScalarProperty Name="AuctionID" ColumnName="AuctionID" />
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
@@ -495,12 +533,11 @@
                 <ScalarProperty Name="EndTime" ColumnName="EndTime" />
                 <ScalarProperty Name="IsClosed" ColumnName="IsClosed" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
-                <ScalarProperty Name="AuctionStatus" ColumnName="AuctionStatus" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Cards">
-            <EntityTypeMapping TypeName="BidUpModel.Card">
+            <EntityTypeMapping TypeName="BidUp_AppModel.Card">
               <MappingFragment StoreEntitySet="Cards">
                 <ScalarProperty Name="CardID" ColumnName="CardID" />
                 <ScalarProperty Name="CardNumber" ColumnName="CardNumber" />
@@ -513,7 +550,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Logs">
-            <EntityTypeMapping TypeName="BidUpModel.Log">
+            <EntityTypeMapping TypeName="BidUp_AppModel.Log">
               <MappingFragment StoreEntitySet="Logs">
                 <ScalarProperty Name="LogID" ColumnName="LogID" />
                 <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
@@ -524,7 +561,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Notifications">
-            <EntityTypeMapping TypeName="BidUpModel.Notification">
+            <EntityTypeMapping TypeName="BidUp_AppModel.Notification">
               <MappingFragment StoreEntitySet="Notifications">
                 <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
                 <ScalarProperty Name="BidderID" ColumnName="BidderID" />
@@ -536,7 +573,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Products">
-            <EntityTypeMapping TypeName="BidUpModel.Product">
+            <EntityTypeMapping TypeName="BidUp_AppModel.Product">
               <MappingFragment StoreEntitySet="Products">
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
@@ -549,7 +586,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="BidUpModel.User">
+            <EntityTypeMapping TypeName="BidUp_AppModel.User">
               <MappingFragment StoreEntitySet="Users">
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="FullName" ColumnName="FullName" />
@@ -563,7 +600,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Wallets">
-            <EntityTypeMapping TypeName="BidUpModel.Wallet">
+            <EntityTypeMapping TypeName="BidUp_AppModel.Wallet">
               <MappingFragment StoreEntitySet="Wallets">
                 <ScalarProperty Name="WalletID" ColumnName="WalletID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />

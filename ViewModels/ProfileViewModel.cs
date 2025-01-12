@@ -249,5 +249,6 @@ namespace BidUp_App.ViewModels
             var enteredPasswordHash = BitConverter.ToString(sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(enteredPassword))).Replace("-", "").ToLower();
             return enteredPasswordHash == _user.m_password;
         }
+
     }
 }
