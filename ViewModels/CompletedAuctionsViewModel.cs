@@ -7,7 +7,7 @@ namespace BidUp_App.ViewModels
 {
     public class CompletedAuctionsViewModel : BaseViewModel
     {
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
         private readonly int _currentBidderId;
 
         public ObservableCollection<AuctionViewModel> CompletedAuctions { get; set; }
@@ -16,7 +16,7 @@ namespace BidUp_App.ViewModels
         public CompletedAuctionsViewModel() { }
         public CompletedAuctionsViewModel(int currentBidderId)
         {
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
             _currentBidderId = currentBidderId;
 
             CompletedAuctions = new ObservableCollection<AuctionViewModel>();

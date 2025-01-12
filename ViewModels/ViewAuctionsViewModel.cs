@@ -12,7 +12,7 @@ namespace BidUp_App.ViewModels
 {
     public class ViewAuctionsViewModel : BaseViewModel
     {
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
         private readonly int _currentBidderId;
         private readonly DispatcherTimer _timer;
         private readonly DispatcherTimer _notificationTimer;
@@ -25,14 +25,14 @@ namespace BidUp_App.ViewModels
         public ViewAuctionsViewModel()
         {
             // Constructor pentru design-time
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
             _currentBidderId = -1; // ID implicit
             Auctions = new ObservableCollection<AuctionViewModel>();
         }
 
         public ViewAuctionsViewModel(int currentBidderId)
         {
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
             _currentBidderId = currentBidderId;
 
             Auctions = new ObservableCollection<AuctionViewModel>();
@@ -176,7 +176,7 @@ namespace BidUp_App.ViewModels
 
             if (notifications.Any())
             {
-                _dbContext.SaveChanges(); // Salvează notificările actualizate
+                _dbContext.SubmitChanges(); // Salvează notificările actualizate
             }
         }
 

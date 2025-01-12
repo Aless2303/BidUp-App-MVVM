@@ -11,7 +11,7 @@ namespace BidUp_App.ViewModels
 {
     public class ManageAuctionsViewModel : BaseViewModel
     {
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
 
         public ObservableCollection<AuctionViewModel> Auctions { get; set; }
         public ICommand CloseAuctionCommand { get; }
@@ -20,7 +20,7 @@ namespace BidUp_App.ViewModels
 
         public ManageAuctionsViewModel()
         {
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
             Auctions = new ObservableCollection<AuctionViewModel>();
 
             CloseAuctionCommand = new RelayCommand<int>(CloseAuction);
@@ -71,7 +71,7 @@ namespace BidUp_App.ViewModels
             if (auction != null)
             {
                 auction.IsClosed = true;
-                _dbContext.SaveChanges();
+                _dbContext.SubmitChanges();
                 LoadAuctions();
             }
         }
@@ -82,7 +82,7 @@ namespace BidUp_App.ViewModels
             if (auction != null && auction.AuctionStatus== "Pending")
             {
                 auction.AuctionStatus = "Refused";
-                _dbContext.SaveChanges();
+                _dbContext.SubmitChanges();
                 LoadAuctions();
             }
         }
@@ -93,7 +93,7 @@ namespace BidUp_App.ViewModels
             if (auction != null && auction.AuctionStatus == "Pending")
             {
                 auction.AuctionStatus = "Accepted";
-                _dbContext.SaveChanges();
+                _dbContext.SubmitChanges();
                 LoadAuctions();
             }
         }

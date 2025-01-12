@@ -12,7 +12,7 @@ namespace BidUp_App.ViewModels
 {
     public class SellerDashboardViewModel : BaseViewModel
     {
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
         private readonly Seller _seller;
         private readonly DispatcherTimer _walletUpdateTimer;
 
@@ -23,7 +23,7 @@ namespace BidUp_App.ViewModels
 
         public SellerDashboardViewModel(Seller seller)
         {
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
             _seller = seller;
 
             WalletBalance = GetWalletBalance();
@@ -52,18 +52,17 @@ namespace BidUp_App.ViewModels
         {
             try
             {
-                var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _seller.m_userID);
+                // Obține entitatea actualizată din baza de date utilizând LINQ to SQL
+                var refreshedWallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _seller.m_userID);
 
-                if (wallet != null)
+                if (refreshedWallet != null)
                 {
-                    // Reîncarcă entitatea din baza de date
-                    _dbContext.Entry(wallet).Reload();
-
+                    // Compară soldul actualizat din baza de date cu cel afișat
                     if (decimal.TryParse(WalletBalance, System.Globalization.NumberStyles.Currency,
                         System.Globalization.CultureInfo.CurrentCulture, out var currentDisplayedBalance) &&
-                        wallet.Balance != currentDisplayedBalance)
+                        refreshedWallet.Balance != currentDisplayedBalance)
                     {
-                        WalletBalance = $"{wallet.Balance:C}";
+                        WalletBalance = $"{refreshedWallet.Balance:C}";
                     }
                 }
             }

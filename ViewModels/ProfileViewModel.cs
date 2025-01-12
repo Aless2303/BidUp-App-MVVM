@@ -12,7 +12,7 @@ namespace BidUp_App.ViewModels
     public class ProfileViewModel : BaseViewModel
     {
         private readonly BidUp_App.Models.Users.User _user;
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
 
         private bool _isCardVisible;
         private BitmapImage _profileImage;
@@ -26,7 +26,7 @@ namespace BidUp_App.ViewModels
         public ICommand AddFundsCommand { get; }
         public ICommand DeductFundsCommand { get; }
 
-        public ProfileViewModel(BidUp_App.Models.Users.User user, BidUpEntities dbContext)
+        public ProfileViewModel(BidUp_App.Models.Users.User user, DataContextDataContext dbContext)
         {
             _user = user ?? throw new ArgumentNullException(nameof(user));
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -122,10 +122,10 @@ namespace BidUp_App.ViewModels
                         Balance = amount,
                         LastUpdated = DateTime.Now
                     };
-                    _dbContext.Wallets.Add(wallet);
+                    _dbContext.Wallets.InsertOnSubmit(wallet);
                 }
 
-                _dbContext.SaveChanges();
+                _dbContext.SubmitChanges();
                 MessageBox.Show("Funds added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -147,7 +147,7 @@ namespace BidUp_App.ViewModels
                 {
                     wallet.Balance -= amount;
                     wallet.LastUpdated = DateTime.Now;
-                    _dbContext.SaveChanges();
+                    _dbContext.SubmitChanges();
                     MessageBox.Show("Funds deducted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -234,7 +234,7 @@ namespace BidUp_App.ViewModels
             if (user != null)
             {
                 user.ProfilePicturePath = profilePicturePath;
-                _dbContext.SaveChanges();
+                _dbContext.SubmitChanges();
             }
         }
 

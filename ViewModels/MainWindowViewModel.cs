@@ -45,7 +45,7 @@ namespace BidUp_App.ViewModels
             if (!ValidateInputs())
                 return;
 
-            using (var context = new BidUpEntities()) // Contextul Entity Framework
+            using (var context = new DataContextDataContext()) // Contextul Entity Framework
             {
                 // Hash the password
                 string passwordHash = HashPassword(Password);

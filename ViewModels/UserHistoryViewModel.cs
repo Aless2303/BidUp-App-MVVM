@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -10,7 +11,7 @@ namespace BidUp_App.ViewModels
     public class UserHistoryViewModel : BaseViewModel
     {
         private readonly BidUp_App.Models.Users.User _user;
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
 
         // Proprietate pentru DataGrid
         public ObservableCollection<Logs> Logs { get; set; }
@@ -21,7 +22,7 @@ namespace BidUp_App.ViewModels
         public UserHistoryViewModel(BidUp_App.Models.Users.User user)
         {
             _user = user;
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
             Logs = new ObservableCollection<Logs>();
 
             // Inițializare comandă Back
@@ -33,10 +34,8 @@ namespace BidUp_App.ViewModels
 
         private void LoadUserHistory()
         {
-            // Preluăm toate log-urile din baza de date și aducem datele în memorie
-            var allLogs = _dbContext.Logs
-                .AsNoTracking() // Optimizăm performanța dacă nu actualizăm datele
-                .ToList();
+            // Preluăm toate log-urile din baza de date
+            var allLogs = _dbContext.Logs.ToList();
 
             // Aplicăm filtrul în memorie folosind LINQ to Objects
             var filteredLogs = allLogs
@@ -45,7 +44,7 @@ namespace BidUp_App.ViewModels
                 .Select(log => new BidUp_App.Models.Loguri.Logs
                 {
                     LogID = log.LogID,
-                    Timestamp = (System.DateTime)log.Timestamp,
+                    Timestamp = (DateTime)log.Timestamp,
                     EventType = log.EventType,
                     Message = log.Message,
                     DynamicData = log.DynamicData
@@ -59,15 +58,13 @@ namespace BidUp_App.ViewModels
             }
         }
 
-
-
         private void GoBack()
         {
             // Navighează înapoi la UserDetailsView
             var parentWindow = Application.Current.Windows.OfType<AdminDashboard>().FirstOrDefault();
 
             if (parentWindow?.DataContext is AdminDashboardViewModel adminViewModel)
-                    adminViewModel.CurrentView = new UserDetailsView(_user);
+                adminViewModel.CurrentView = new UserDetailsView(_user);
         }
     }
 }

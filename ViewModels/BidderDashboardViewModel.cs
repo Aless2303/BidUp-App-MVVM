@@ -11,7 +11,7 @@ namespace BidUp_App.ViewModels
     public class BidderDashboardViewModel : BaseViewModel
     {
         private readonly Bidder _bidder;
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
         private readonly DispatcherTimer _walletUpdateTimer;
 
         private string _walletBalance;
@@ -25,7 +25,7 @@ namespace BidUp_App.ViewModels
         public BidderDashboardViewModel(Bidder bidder)
         {
             _bidder = bidder;
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
 
             // Inițializăm comenzile
             ProfileCommand = new RelayCommand(LoadProfileView);
@@ -93,18 +93,18 @@ namespace BidUp_App.ViewModels
         {
             try
             {
-                var wallet = _dbContext.Wallets.FirstOrDefault(w => w.UserID == _bidder.m_userID);
+                var wallet = _dbContext.Wallets.SingleOrDefault(w => w.UserID == _bidder.m_userID);
 
                 if (wallet != null)
                 {
-                    // Reîncarcă entitatea din baza de date
-                    _dbContext.Entry(wallet).Reload();
+                    var refreshedWallet = _dbContext.Wallets.SingleOrDefault(w => w.UserID == wallet.UserID);
 
-                    if (decimal.TryParse(WalletBalance, System.Globalization.NumberStyles.Currency,
-                        System.Globalization.CultureInfo.CurrentCulture, out var currentDisplayedBalance) &&
-                        wallet.Balance != currentDisplayedBalance)
+                    if (refreshedWallet != null &&
+                        decimal.TryParse(WalletBalance, System.Globalization.NumberStyles.Currency,
+                            System.Globalization.CultureInfo.CurrentCulture, out var currentDisplayedBalance) &&
+                        refreshedWallet.Balance != currentDisplayedBalance)
                     {
-                        WalletBalance = $"{wallet.Balance:C}";
+                        WalletBalance = $"{refreshedWallet.Balance:C}";
                     }
                 }
             }

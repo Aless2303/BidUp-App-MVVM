@@ -9,14 +9,14 @@ namespace BidUp_App.ViewModels
 {
     public class AddAuctionViewModel : BaseViewModel
     {
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
         private readonly int _sellerId;
 
         public AddAuctionViewModel() { }
 
         public AddAuctionViewModel(int sellerId)
         {
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
             _sellerId = sellerId;
 
             UploadImageCommand = new RelayCommand(UploadImage);
@@ -120,8 +120,8 @@ namespace BidUp_App.ViewModels
                     SellerID = _sellerId
                 };
 
-                _dbContext.Products.Add(newProduct);
-                _dbContext.SaveChanges();
+                _dbContext.Products.InsertOnSubmit(newProduct);
+                _dbContext.SubmitChanges();
 
                 var newAuction = new Auction
                 {
@@ -137,8 +137,8 @@ namespace BidUp_App.ViewModels
                     AuctionStatus = "Pending"
                 };
 
-                _dbContext.Auctions.Add(newAuction);
-                _dbContext.SaveChanges();
+                _dbContext.Auctions.InsertOnSubmit(newAuction);
+                _dbContext.SubmitChanges();
 
                 MessageBox.Show("Auction added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }

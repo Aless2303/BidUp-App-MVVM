@@ -11,7 +11,7 @@ namespace BidUp_App.ViewModels
 {
     public class ManageUsersViewModel : BaseViewModel
     {
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
 
         public ObservableCollection<User> Users { get; private set; }
 
@@ -23,7 +23,7 @@ namespace BidUp_App.ViewModels
 
         public ManageUsersViewModel()
         {
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
             Users = new ObservableCollection<User>();
 
             // Inițializare comenzi
@@ -133,8 +133,8 @@ namespace BidUp_App.ViewModels
                 if (user != null)
                 {
                     // Șterge utilizatorul (ștergerea cascadată se va ocupa de FK asociate)
-                    _dbContext.Users.Remove(user);
-                    _dbContext.SaveChanges();
+                    _dbContext.Users.DeleteOnSubmit(user);
+                    _dbContext.SubmitChanges();
 
                     MessageBox.Show($"User with ID: {userId} has been deleted.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 

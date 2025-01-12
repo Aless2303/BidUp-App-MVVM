@@ -10,7 +10,7 @@ namespace BidUp_App.ViewModels
     {
         private readonly Auction _selectedAuction;
         private readonly int _currentBidderId;
-        private readonly BidUpEntities _dbContext;
+        private readonly DataContextDataContext _dbContext;
         private decimal _bidAmount;
 
 
@@ -23,7 +23,7 @@ namespace BidUp_App.ViewModels
         {
             _selectedAuction = selectedAuction;
             _currentBidderId = currentBidderId;
-            _dbContext = new BidUpEntities();
+            _dbContext = new DataContextDataContext();
 
             PlaceBidCommand = new RelayCommand(PlaceBid);
             CancelCommand = new RelayCommand(Cancel);
@@ -88,7 +88,7 @@ namespace BidUp_App.ViewModels
                             CreatedAt = DateTime.Now,
                             IsRead = false
                         };
-                        _dbContext.Notifications.Add(notification);
+                        _dbContext.Notifications.InsertOnSubmit(notification);
                     }
                 }
 
@@ -113,8 +113,8 @@ namespace BidUp_App.ViewModels
                     })
                 };
 
-                _dbContext.Logs.Add(log);
-                _dbContext.SaveChanges();
+                _dbContext.Logs.InsertOnSubmit(log);
+                _dbContext.SubmitChanges();
 
                 MessageBox.Show("Your bid has been placed successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 

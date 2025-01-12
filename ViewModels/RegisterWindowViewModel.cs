@@ -79,7 +79,7 @@ namespace BidUp_App.ViewModels
 
             try
             {
-                using (var context = new BidUpEntities()) // Entity Framework Context
+                using (var context = new DataContextDataContext()) // Entity Framework Context
                 {
                     var newUser = new User
                     {
@@ -93,8 +93,8 @@ namespace BidUp_App.ViewModels
                     };
 
                     // Adaugă utilizator în context și salvează
-                    context.Users.Add(newUser);
-                    context.SaveChanges();
+                    context.Users.InsertOnSubmit(newUser);
+                    context.SubmitChanges();
 
                     if (Role == "Bidder" || Role == "Seller")
                     {
@@ -108,8 +108,8 @@ namespace BidUp_App.ViewModels
                             OwnerUserID = newUser.UserID
                         };
 
-                        context.Cards.Add(newCard);
-                        context.SaveChanges();
+                        context.Cards.InsertOnSubmit(newCard);
+                        context.SubmitChanges();
                     }
 
                     MessageBox.Show("Registration successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -137,7 +137,7 @@ namespace BidUp_App.ViewModels
                 return false;
             }
 
-            using (var context = new BidUpEntities())
+            using (var context = new DataContextDataContext())
             {
                 if (context.Users.Any(u => u.Email == Email))
                 {
