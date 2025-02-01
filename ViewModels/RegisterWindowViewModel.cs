@@ -152,7 +152,7 @@ namespace BidUp_App.ViewModels
                 return false;
             }
 
-            if (!Regex.IsMatch(Password, @"^(?=.[a-z])(?=.[A-Z])(?=.*\d).{6,}$"))
+            if (!Regex.IsMatch(Password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"))
             {
                 MessageBox.Show("Password must contain at least one lowercase letter, one uppercase letter, one digit, and be at least 6 characters long.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -173,6 +173,18 @@ namespace BidUp_App.ViewModels
             if (!Regex.IsMatch(ExpiryDate, @"^(0[1-9]|1[0-2])/\d{2}$") || !IsValidExpiryDate(ExpiryDate))
             {
                 MessageBox.Show("Invalid Expiry Date format. Please use MM/YY.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+
+
+            // Creăm un obiect DateTime din BirthDay, BirthMonth și BirthYear
+            var birthDate = new DateTime(BirthYear ?? 1900, DateTime.ParseExact(BirthMonth, "MMMM", null).Month, BirthDay ?? 1);
+
+            // Verificăm dacă utilizatorul are cel puțin 18 ani
+            if (!IsUserAtLeast18YearsOld(birthDate))
+            {
+                MessageBox.Show("You must be at least 18 years old to register.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
@@ -221,5 +233,21 @@ namespace BidUp_App.ViewModels
                 return string.Concat(sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)).Select(b => b.ToString("x2")));
             }
         }
+
+
+        private bool IsUserAtLeast18YearsOld(DateTime birthDate)
+        {
+            var today = DateTime.Today;
+            var age = today.Year - birthDate.Year;
+
+            // Verificăm dacă ziua de naștere a avut loc anul acesta
+            if (birthDate > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            return age >= 18;
+        }
+
     }
 }

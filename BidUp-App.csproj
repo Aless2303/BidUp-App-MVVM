@@ -306,29 +306,29 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Auction.cs">
-      <DependentUpon>BidUpModel.tt</DependentUpon>
+      <DependentUpon>Bidup.tt</DependentUpon>
     </Compile>
-    <Compile Include="BidUpModel.Context.cs">
+    <Compile Include="Bidup.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BidUpModel.Context.tt</DependentUpon>
+      <DependentUpon>Bidup.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="BidUpModel.cs">
+    <Compile Include="Bidup.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BidUpModel.tt</DependentUpon>
+      <DependentUpon>Bidup.tt</DependentUpon>
     </Compile>
-    <Compile Include="BidUpModel.Designer.cs">
+    <Compile Include="Bidup.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BidUpModel.edmx</DependentUpon>
+      <DependentUpon>Bidup.edmx</DependentUpon>
     </Compile>
     <Compile Include="BoolToVisibilityConverter.cs" />
     <Compile Include="Card.cs">
-      <DependentUpon>BidUpModel.tt</DependentUpon>
+      <DependentUpon>Bidup.tt</DependentUpon>
     </Compile>
     <Compile Include="Log.cs">
-      <DependentUpon>BidUpModel.tt</DependentUpon>
+      <DependentUpon>Bidup.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Interfaces\IUser.cs" />
@@ -344,16 +344,19 @@
     <Compile Include="Models\Users\UserFactory.cs" />
     <Compile Include="Models\Wallet.cs" />
     <Compile Include="Notification.cs">
-      <DependentUpon>BidUpModel.tt</DependentUpon>
+      <DependentUpon>Bidup.tt</DependentUpon>
     </Compile>
     <Compile Include="Product.cs">
-      <DependentUpon>BidUpModel.tt</DependentUpon>
+      <DependentUpon>Bidup.tt</DependentUpon>
     </Compile>
     <Compile Include="RegisterWindow.xaml.cs">
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="User.cs">
-      <DependentUpon>BidUpModel.tt</DependentUpon>
+      <DependentUpon>Bidup.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\CustomPasswordBox.xaml.cs">
+      <DependentUpon>CustomPasswordBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\CustomTextBox.xaml.cs">
       <DependentUpon>CustomTextBox.xaml</DependentUpon>
@@ -423,7 +426,7 @@
       <DependentUpon>ViewAuctionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wallet.cs">
-      <DependentUpon>BidUpModel.tt</DependentUpon>
+      <DependentUpon>Bidup.tt</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -438,6 +441,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="RegisterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\CustomPasswordBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -524,12 +531,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="BidUpModel.edmx">
+    <EntityDeploy Include="Bidup.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>BidUpModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>Bidup.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="BidUpModel.edmx.diagram">
-      <DependentUpon>BidUpModel.edmx</DependentUpon>
+    <None Include="Bidup.edmx.diagram">
+      <DependentUpon>Bidup.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -566,15 +573,15 @@
     <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BidUpModel.Context.tt">
+    <Content Include="Bidup.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>BidUpModel.edmx</DependentUpon>
-      <LastGenOutput>BidUpModel.Context.cs</LastGenOutput>
+      <DependentUpon>Bidup.edmx</DependentUpon>
+      <LastGenOutput>Bidup.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="BidUpModel.tt">
+    <Content Include="Bidup.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>BidUpModel.edmx</DependentUpon>
-      <LastGenOutput>BidUpModel.cs</LastGenOutput>
+      <DependentUpon>Bidup.edmx</DependentUpon>
+      <LastGenOutput>Bidup.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

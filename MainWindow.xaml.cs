@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using BidUp_App.ViewModels;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace BidUp_App
 {
@@ -8,5 +10,8 @@ namespace BidUp_App
         {
             InitializeComponent();
         }
+
+
+
     }
 }

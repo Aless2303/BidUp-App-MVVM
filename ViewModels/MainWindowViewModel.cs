@@ -1,4 +1,5 @@
 ﻿using BidUp_App.Models.Users; // Pentru clasele de utilizatori din aplicație
+using System.ComponentModel;
 using System.Data.Entity; // Entity Framework
 using System.Linq;
 using System.Windows;
@@ -28,7 +29,11 @@ namespace BidUp_App.ViewModels
         public string Password
         {
             get => _password;
-            set { _password = value; OnPropertyChanged(nameof(Password)); }
+            set
+            {
+                _password = value;
+                OnPropertyChanged(nameof(Password));
+            }
         }
 
         public string Role
@@ -174,6 +179,12 @@ namespace BidUp_App.ViewModels
             {
                 return string.Concat(sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)).Select(b => b.ToString("x2")));
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
