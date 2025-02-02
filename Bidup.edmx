@@ -35,6 +35,13 @@
           <Property Name="OwnerUserID" Type="int" />
           <Property Name="Balance" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Logs">
           <Key>
             <PropertyRef Name="LogID" />
@@ -64,9 +71,18 @@
           <Property Name="ProductName" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Description" Type="text" />
           <Property Name="ProductImagePath" Type="text" />
-          <Property Name="Category" Type="varchar" MaxLength="50" />
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
           <Property Name="SellerID" Type="int" Nullable="false" />
+          <Property Name="CategoryID" Type="int" />
+        </EntityType>
+        <EntityType Name="UserNotifications">
+          <Key>
+            <PropertyRef Name="UserNotificationID" />
+          </Key>
+          <Property Name="UserNotificationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="NotificationID" Type="int" Nullable="false" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -176,6 +192,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Products_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserNotifications_Notifications">
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="1" />
+          <End Role="UserNotifications" Type="Self.UserNotifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Notifications">
+              <PropertyRef Name="NotificationID" />
+            </Principal>
+            <Dependent Role="UserNotifications">
+              <PropertyRef Name="NotificationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserNotifications_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="UserNotifications" Type="Self.UserNotifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="UserNotifications">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Wallet_User">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="Wallets" Type="Self.Wallets" Multiplicity="*" />
@@ -191,9 +243,11 @@
         <EntityContainer Name="BidUpModelStoreContainer">
           <EntitySet Name="Auctions" EntityType="Self.Auctions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cards" EntityType="Self.Cards" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Logs" EntityType="Self.Logs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserNotifications" EntityType="Self.UserNotifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Wallets" EntityType="Self.Wallets" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Auctions__Curren__6FE99F9F" Association="Self.FK__Auctions__Curren__6FE99F9F">
@@ -223,6 +277,18 @@
           <AssociationSet Name="FK_Notifications_Bidders" Association="Self.FK_Notifications_Bidders">
             <End Role="Users" EntitySet="Users" />
             <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Products_Categories" Association="Self.FK_Products_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserNotifications_Notifications" Association="Self.FK_UserNotifications_Notifications">
+            <End Role="Notifications" EntitySet="Notifications" />
+            <End Role="UserNotifications" EntitySet="UserNotifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserNotifications_Users" Association="Self.FK_UserNotifications_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserNotifications" EntitySet="UserNotifications" />
           </AssociationSet>
           <AssociationSet Name="FK_Wallet_User" Association="Self.FK_Wallet_User">
             <End Role="Users" EntitySet="Users" />
@@ -269,6 +335,14 @@
           <Property Name="Balance" Type="Decimal" Precision="18" Scale="2" />
           <NavigationProperty Name="User" Relationship="Self.FK__Cards__OwnerUser__4BAC3F29" FromRole="Cards" ToRole="Users" />
         </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_Products_Categories" FromRole="Categories" ToRole="Products" />
+        </EntityType>
         <EntityType Name="Log">
           <Key>
             <PropertyRef Name="LogID" />
@@ -291,6 +365,7 @@
           <Property Name="IsRead" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Auction" Relationship="Self.FK_Notifications_Auctions" FromRole="Notifications" ToRole="Auctions" />
           <NavigationProperty Name="User" Relationship="Self.FK_Notifications_Bidders" FromRole="Notifications" ToRole="Users" />
+          <NavigationProperty Name="UserNotifications" Relationship="Self.FK_UserNotifications_Notifications" FromRole="Notifications" ToRole="UserNotifications" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -300,11 +375,23 @@
           <Property Name="ProductName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ProductImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="SellerID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" />
           <NavigationProperty Name="Auctions" Relationship="Self.FK__Auctions__Produc__71D1E811" FromRole="Products" ToRole="Auctions" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_Products_Categories" FromRole="Products" ToRole="Categories" />
           <NavigationProperty Name="User" Relationship="Self.FK__Products__Seller__5629CD9C" FromRole="Products" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="UserNotification">
+          <Key>
+            <PropertyRef Name="UserNotificationID" />
+          </Key>
+          <Property Name="UserNotificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="NotificationID" Type="Int32" Nullable="false" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Notification" Relationship="Self.FK_UserNotifications_Notifications" FromRole="UserNotifications" ToRole="Notifications" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserNotifications_Users" FromRole="UserNotifications" ToRole="Users" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -323,6 +410,7 @@
           <NavigationProperty Name="Cards" Relationship="Self.FK__Cards__OwnerUser__4BAC3F29" FromRole="Users" ToRole="Cards" />
           <NavigationProperty Name="Notifications" Relationship="Self.FK_Notifications_Bidders" FromRole="Users" ToRole="Notifications" />
           <NavigationProperty Name="Products" Relationship="Self.FK__Products__Seller__5629CD9C" FromRole="Users" ToRole="Products" />
+          <NavigationProperty Name="UserNotifications" Relationship="Self.FK_UserNotifications_Users" FromRole="Users" ToRole="UserNotifications" />
           <NavigationProperty Name="Wallets" Relationship="Self.FK_Wallet_User" FromRole="Users" ToRole="Wallets" />
         </EntityType>
         <EntityType Name="Wallet">
@@ -397,6 +485,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Products_Categories">
+          <End Role="Categories" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="Products" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Notifications_Bidders">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
           <End Role="Notifications" Type="Self.Notification" Multiplicity="*" />
@@ -409,6 +509,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserNotifications_Notifications">
+          <End Role="Notifications" Type="Self.Notification" Multiplicity="1" />
+          <End Role="UserNotifications" Type="Self.UserNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Notifications">
+              <PropertyRef Name="NotificationID" />
+            </Principal>
+            <Dependent Role="UserNotifications">
+              <PropertyRef Name="NotificationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Products__Seller__5629CD9C">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
           <End Role="Products" Type="Self.Product" Multiplicity="*" />
@@ -418,6 +530,18 @@
             </Principal>
             <Dependent Role="Products">
               <PropertyRef Name="SellerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserNotifications_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="UserNotifications" Type="Self.UserNotification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="UserNotifications">
+              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -436,9 +560,11 @@
         <EntityContainer Name="BidUpEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Auctions" EntityType="Self.Auction" />
           <EntitySet Name="Cards" EntityType="Self.Card" />
+          <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Logs" EntityType="Self.Log" />
           <EntitySet Name="Notifications" EntityType="Self.Notification" />
           <EntitySet Name="Products" EntityType="Self.Product" />
+          <EntitySet Name="UserNotifications" EntityType="Self.UserNotification" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="Wallets" EntityType="Self.Wallet" />
           <AssociationSet Name="FK__Auctions__Curren__6FE99F9F" Association="Self.FK__Auctions__Curren__6FE99F9F">
@@ -461,13 +587,25 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Cards" EntitySet="Cards" />
           </AssociationSet>
+          <AssociationSet Name="FK_Products_Categories" Association="Self.FK_Products_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
           <AssociationSet Name="FK_Notifications_Bidders" Association="Self.FK_Notifications_Bidders">
             <End Role="Users" EntitySet="Users" />
             <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserNotifications_Notifications" Association="Self.FK_UserNotifications_Notifications">
+            <End Role="Notifications" EntitySet="Notifications" />
+            <End Role="UserNotifications" EntitySet="UserNotifications" />
+          </AssociationSet>
           <AssociationSet Name="FK__Products__Seller__5629CD9C" Association="Self.FK__Products__Seller__5629CD9C">
             <End Role="Users" EntitySet="Users" />
             <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserNotifications_Users" Association="Self.FK_UserNotifications_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserNotifications" EntitySet="UserNotifications" />
           </AssociationSet>
           <AssociationSet Name="FK_Wallet_User" Association="Self.FK_Wallet_User">
             <End Role="Users" EntitySet="Users" />
@@ -512,6 +650,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="BidUpModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Logs">
             <EntityTypeMapping TypeName="BidUpModel.Log">
               <MappingFragment StoreEntitySet="Logs">
@@ -542,9 +688,19 @@
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ProductImagePath" ColumnName="ProductImagePath" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
                 <ScalarProperty Name="SellerID" ColumnName="SellerID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserNotifications">
+            <EntityTypeMapping TypeName="BidUpModel.UserNotification">
+              <MappingFragment StoreEntitySet="UserNotifications">
+                <ScalarProperty Name="UserNotificationID" ColumnName="UserNotificationID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

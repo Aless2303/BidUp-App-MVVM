@@ -12,9 +12,10 @@ namespace BidUp_App.Models.Users
         {
             return Role switch
             {
-                "Bidder" => new Bidder(),
-                "Seller" => new Seller(),
+                //"Bidder" => new Bidder(),
+                //"Seller" => new Seller(),
                 "Admin" => new Admin(),
+                "User" => new Bidder(),
                 _ => throw new ArgumentException("Invalid role specified!")
             };
         }

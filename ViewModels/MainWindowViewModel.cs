@@ -61,7 +61,6 @@ namespace BidUp_App.ViewModels
 
                 if (dbUser != null)
                 {
-
                     // Validare rol
                     if (string.IsNullOrEmpty(dbUser.Role) || !IsValidRole(dbUser.Role))
                     {
@@ -69,14 +68,12 @@ namespace BidUp_App.ViewModels
                         return;
                     }
 
-
                     // Validare rol selectat din ComboBox cu cel din baza de date
                     if (dbUser.Role != Role)
                     {
-                        MessageBox.Show($"Selected role '{Role}' '{dbUser.Role}'does not match the role assigned to this user in the database.", "Role Mismatch", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Selected role '{Role}' does not match the role assigned to this user in the database.", "Role Mismatch", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
-
 
                     // Creare utilizator pe baza rolului
                     var user = UserFactory.CreateUser(dbUser.Role);
@@ -88,8 +85,8 @@ namespace BidUp_App.ViewModels
                     user.ProfilePicturePath = dbUser.ProfilePicturePath;
                     user.m_password = dbUser.PasswordHash;
 
-                    // Încarcă Card-ul pentru Bidder și Seller
-                    if (user is Bidder || user is Seller)
+                    // Încarcă Card-ul pentru User
+                    if (user is Bidder bidder)
                     {
                         var card = context.Cards
                             .SingleOrDefault(c => c.OwnerUserID == dbUser.UserID);
@@ -106,14 +103,7 @@ namespace BidUp_App.ViewModels
                                 Balance = (float)card.Balance
                             };
 
-                            if (user is Bidder bidder)
-                            {
-                                bidder.card = userCard;
-                            }
-                            else if (user is Seller seller)
-                            {
-                                seller.card = userCard;
-                            }
+                            bidder.card = userCard;
                         }
                     }
 
@@ -169,7 +159,7 @@ namespace BidUp_App.ViewModels
 
         private bool IsValidRole(string role)
         {
-            string[] validRoles = { "Admin", "Bidder", "Seller" };
+            string[] validRoles = { "Admin", "User" }; // Doar Admin și User sunt roluri valide acum
             return validRoles.Contains(role);
         }
 

@@ -1,8 +1,10 @@
 ﻿using BidUp_App.Models;
 using BidUp_App.Models.Users;
 using BidUp_App.Views.Bidder;
+using BidUp_App.Views.Seller;
 using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -13,6 +15,8 @@ namespace BidUp_App.ViewModels
         private readonly Bidder _bidder;
         private readonly BidUpEntities _dbContext;
         private readonly DispatcherTimer _walletUpdateTimer;
+        private readonly DispatcherTimer _notificationTimer;
+
 
         private string _walletBalance;
         private object _currentView;
@@ -32,6 +36,8 @@ namespace BidUp_App.ViewModels
             NewAuctionsCommand = new RelayCommand(LoadNewAuctionsView);
             LastBidsCommand = new RelayCommand(LoadLastBidsView);
             CompletedAuctionsCommand = new RelayCommand(LoadCompletedAuctionsView);
+            AddNewAuctionCommand = new RelayCommand(LoadAddNewAuctionView);
+            ViewYourAuctionsCommand = new RelayCommand(LoadViewYourAuctionsView);
 
             // Inițializăm și încărcăm soldul inițial
             LoadWalletBalance();
@@ -46,6 +52,15 @@ namespace BidUp_App.ViewModels
             };
             _walletUpdateTimer.Tick += WalletUpdateTimer_Tick;
             _walletUpdateTimer.Start();
+
+
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5) // Verifică la fiecare 5 secunde
+            };
+            _notificationTimer.Tick += CheckNotifications;
+            _notificationTimer.Start();
+
         }
 
         public string WalletBalance
@@ -74,6 +89,9 @@ namespace BidUp_App.ViewModels
         public ICommand LastBidsCommand { get; }
 
         public ICommand CompletedAuctionsCommand { get; }
+
+        public ICommand AddNewAuctionCommand { get; } // Comandă nouă
+        public ICommand ViewYourAuctionsCommand { get; } // Comandă nouă
 
         private void LoadWalletBalance()
         {
@@ -115,6 +133,37 @@ namespace BidUp_App.ViewModels
         }
 
 
+        private void CheckNotifications(object sender, EventArgs e)
+        {
+            var notifications = _dbContext.UserNotifications
+                .Where(un => un.UserID == _bidder.m_userID && !un.IsRead)
+                .Select(un => new
+                {
+                    un.UserNotificationID,
+                    un.Notification.Message
+                })
+                .ToList();
+
+            foreach (var notification in notifications)
+            {
+                System.Windows.MessageBox.Show(notification.Message, "New Notification", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Marcare notificare ca citită
+                var userNotification = _dbContext.UserNotifications.Find(notification.UserNotificationID);
+                if (userNotification != null)
+                {
+                    userNotification.IsRead = true;
+                }
+            }
+
+            if (notifications.Any())
+            {
+                _dbContext.SaveChanges(); // Salvăm starea notificărilor
+            }
+        }
+
+
+
         private void LoadProfileView()
         {
             // Creează ProfileViewModel și setează-l ca DataContext pentru ProfileView
@@ -134,7 +183,7 @@ namespace BidUp_App.ViewModels
             var auctionsViewModel = new ViewAuctionsViewModel(_bidder.m_userID);
 
             // Creează View-ul și setează DataContext-ul
-            var auctionsView = new ViewAuctionsControl(_bidder.m_userID);
+            var auctionsView = new BidUp_App.Views.Bidder.ViewAuctionsControl(_bidder.m_userID);
 
             // Setează View-ul curent
             CurrentView = auctionsView;
@@ -164,5 +213,35 @@ namespace BidUp_App.ViewModels
             };
             CurrentView = completedAuctionsView;
         }
+
+
+        //din seller
+        private void LoadAddNewAuctionView()
+        {
+            // Initialize AddAuctionViewModel with seller's ID
+            var addAuctionViewModel = new AddAuctionViewModel(_bidder.m_userID);
+
+            // Initialize AddAuctionControl and set DataContext
+            var addAuctionControl = new AddAuctionControl(_bidder.m_userID)
+            {
+                DataContext = addAuctionViewModel
+            };
+
+            CurrentView = addAuctionControl;
+        }
+
+
+        //din seller
+        // Metodă nouă pentru încărcarea view-ului View Your Auctions
+        private void LoadViewYourAuctionsView()
+        {
+            // Initialize ViewAuctionsControl for seller's auctions
+            var viewAuctionsView = new BidUp_App.Views.Seller.ViewAuctionsControl(_bidder.m_userID);
+            CurrentView = viewAuctionsView;
+        }
+
+
+
+
     }
 }

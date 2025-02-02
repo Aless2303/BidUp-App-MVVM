@@ -22,6 +22,7 @@ namespace BidUp_App
             this.Cards = new HashSet<Card>();
             this.Notifications = new HashSet<Notification>();
             this.Products = new HashSet<Product>();
+            this.UserNotifications = new HashSet<UserNotification>();
             this.Wallets = new HashSet<Wallet>();
         }
     
@@ -44,6 +45,8 @@ namespace BidUp_App
         public virtual ICollection<Notification> Notifications { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserNotification> UserNotifications { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Wallet> Wallets { get; set; }
     }

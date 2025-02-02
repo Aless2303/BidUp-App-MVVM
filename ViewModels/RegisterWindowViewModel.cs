@@ -96,7 +96,8 @@ namespace BidUp_App.ViewModels
                     context.Users.Add(newUser);
                     context.SaveChanges();
 
-                    if (Role == "Bidder" || Role == "Seller")
+                    // Adaugă cardul doar pentru User (nu mai este necesară verificarea pentru Bidder/Seller)
+                    if (Role == "User")
                     {
                         var newCard = new Card
                         {
@@ -176,12 +177,8 @@ namespace BidUp_App.ViewModels
                 return false;
             }
 
-
-
-            // Creăm un obiect DateTime din BirthDay, BirthMonth și BirthYear
-            var birthDate = new DateTime(BirthYear ?? 1900, DateTime.ParseExact(BirthMonth, "MMMM", null).Month, BirthDay ?? 1);
-
             // Verificăm dacă utilizatorul are cel puțin 18 ani
+            var birthDate = new DateTime(BirthYear ?? 1900, DateTime.ParseExact(BirthMonth, "MMMM", null).Month, BirthDay ?? 1);
             if (!IsUserAtLeast18YearsOld(birthDate))
             {
                 MessageBox.Show("You must be at least 18 years old to register.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -191,8 +188,6 @@ namespace BidUp_App.ViewModels
             return true;
         }
 
-
-        // Funcție pentru validarea datei de expirare
         private bool IsValidExpiryDate(string expiryDate)
         {
             try
@@ -209,7 +204,6 @@ namespace BidUp_App.ViewModels
                 return false;
             }
         }
-
 
         private void BackToSignIn()
         {
@@ -234,7 +228,6 @@ namespace BidUp_App.ViewModels
             }
         }
 
-
         private bool IsUserAtLeast18YearsOld(DateTime birthDate)
         {
             var today = DateTime.Today;
@@ -248,6 +241,5 @@ namespace BidUp_App.ViewModels
 
             return age >= 18;
         }
-
     }
 }

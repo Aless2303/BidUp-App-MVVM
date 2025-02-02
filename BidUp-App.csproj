@@ -323,8 +323,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Bidup.edmx</DependentUpon>
     </Compile>
+    <Compile Include="BidUp1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BidUp.xsd</DependentUpon>
+    </Compile>
     <Compile Include="BoolToVisibilityConverter.cs" />
     <Compile Include="Card.cs">
+      <DependentUpon>Bidup.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Category.cs">
       <DependentUpon>Bidup.tt</DependentUpon>
     </Compile>
     <Compile Include="Log.cs">
@@ -361,6 +369,9 @@
     <Compile Include="UserControls\CustomTextBox.xaml.cs">
       <DependentUpon>CustomTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserNotification.cs">
+      <DependentUpon>Bidup.tt</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AddAuctionViewModel.cs" />
     <Compile Include="ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="ViewModels\AdminProfileViewModel.cs" />
@@ -376,6 +387,7 @@
     <Compile Include="ViewModels\RegisterWindowViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SellerDashboardViewModel.cs" />
+    <Compile Include="ViewModels\ToastNotificationViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserHistoryViewModel.cs" />
     <Compile Include="ViewModels\ViewAuctionsSellerViewModel.cs" />
@@ -501,16 +513,16 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Seller\AddAuctionControl.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Seller\SellerDashboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Seller\ViewAuctionsControl.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -537,6 +549,17 @@
     </EntityDeploy>
     <None Include="Bidup.edmx.diagram">
       <DependentUpon>Bidup.edmx</DependentUpon>
+    </None>
+    <None Include="BidUp.xsc">
+      <DependentUpon>BidUp.xsd</DependentUpon>
+    </None>
+    <None Include="BidUp.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>BidUp1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="BidUp.xss">
+      <DependentUpon>BidUp.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

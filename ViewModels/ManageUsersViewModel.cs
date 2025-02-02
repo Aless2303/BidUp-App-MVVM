@@ -19,8 +19,6 @@ namespace BidUp_App.ViewModels
         public ICommand ShowUserDetailsCommand { get; }
         public ICommand DeleteUserCommand { get; }
 
-
-
         public ManageUsersViewModel()
         {
             _dbContext = new BidUpEntities();
@@ -36,7 +34,7 @@ namespace BidUp_App.ViewModels
         private void LoadUsers()
         {
             var users = _dbContext.Users
-                .Where(u => u.Role == "Seller" || u.Role == "Bidder")
+                .Where(u => u.Role == "Admin" || u.Role == "User") // Filtrează doar Admin și User
                 .ToList();
 
             Users.Clear();
@@ -70,20 +68,8 @@ namespace BidUp_App.ViewModels
                         };
                         break;
 
-                    case "Seller":
-                        user = new BidUp_App.Models.Users.Seller
-                        {
-                            m_userID = dbUser.UserID,
-                            m_fullName = dbUser.FullName,
-                            m_email = dbUser.Email,
-                            m_BirthDate = dbUser.BirthDate,
-                            ProfilePicturePath = dbUser.ProfilePicturePath,
-                            m_password = dbUser.PasswordHash
-                        };
-                        break;
-
-                    case "Bidder":
-                        user = new BidUp_App.Models.Users.Bidder
+                    case "User":
+                        user = new BidUp_App.Models.Users.Bidder // Folosim Bidder pentru User
                         {
                             m_userID = dbUser.UserID,
                             m_fullName = dbUser.FullName,
@@ -107,7 +93,6 @@ namespace BidUp_App.ViewModels
                             DataContext = new UserDetailsViewModel(user)
                         };
                     }
-
                 }
                 else
                 {
@@ -120,25 +105,23 @@ namespace BidUp_App.ViewModels
             }
         }
 
-
-
-
         private void DeleteUser(int userId)
         {
             try
             {
-                // Găsește utilizatorul din baza de date
                 var user = _dbContext.Users.SingleOrDefault(u => u.UserID == userId);
 
                 if (user != null)
                 {
-                    // Șterge utilizatorul (ștergerea cascadată se va ocupa de FK asociate)
+                    // Ștergere notificări asociate
+                    var notifications = _dbContext.UserNotifications.Where(n => n.UserID == userId).ToList();
+                    _dbContext.UserNotifications.RemoveRange(notifications);
+
+                    // Acum ștergem utilizatorul
                     _dbContext.Users.Remove(user);
                     _dbContext.SaveChanges();
 
                     MessageBox.Show($"User with ID: {userId} has been deleted.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                    // Reîncarcă lista de utilizatori
                     LoadUsers();
                 }
                 else
@@ -151,7 +134,6 @@ namespace BidUp_App.ViewModels
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
     }
 }

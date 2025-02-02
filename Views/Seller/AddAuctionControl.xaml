@@ -16,28 +16,39 @@
 
             <!-- Product Name -->
             <TextBlock Text="Product Name:" FontWeight="SemiBold" FontSize="14" Foreground="#A1A1B3" Margin="0,5"/>
-            <TextBox Text="{Binding ProductName}" Margin="0,5,0,15" Height="30" Background="#3E3E5E" Foreground="#FFFFFF" BorderBrush="#565678"/>
+            <TextBox Text="{Binding ProductName}" Margin="0,5,0,15" Height="30" Background="#FFFFFF" Foreground="#000000" BorderBrush="#565678"/>
 
             <!-- Product Description -->
             <TextBlock Text="Description:" FontWeight="SemiBold" FontSize="14" Foreground="#A1A1B3" Margin="0,5"/>
             <TextBox Text="{Binding Description}" Margin="0,5,0,15" Height="60" 
-                     Background="#3E3E5E" 
-                     Foreground="#FFFFFF" 
+                     Background="#FFFFFF" 
+                     Foreground="#000000" 
                      BorderBrush="#565678" 
                      TextWrapping="Wrap" 
                      AcceptsReturn="True"/>
 
+            <!-- Category -->
+            <TextBlock Text="Category:" FontWeight="SemiBold" FontSize="14" Foreground="#A1A1B3" Margin="0,5"/>
+            <ComboBox ItemsSource="{Binding Categories}" 
+                      DisplayMemberPath="Name" 
+                      SelectedValuePath="CategoryID" 
+                      SelectedValue="{Binding SelectedCategoryID}" 
+                      Margin="0,5,0,15" 
+                      Background="#FFFFFF" 
+                      Foreground="#000000" 
+                      BorderBrush="#565678"/>
+
             <!-- Starting Price -->
             <TextBlock Text="Starting Price:" FontWeight="SemiBold" FontSize="14" Foreground="#A1A1B3" Margin="0,5"/>
-            <TextBox Text="{Binding StartingPrice}" Margin="0,5,0,15" Height="30" Background="#3E3E5E" Foreground="#FFFFFF" BorderBrush="#565678"/>
+            <TextBox Text="{Binding StartingPrice}" Margin="0,5,0,15" Height="30" Background="#FFFFFF" Foreground="#000000" BorderBrush="#565678"/>
 
             <!-- Start Time -->
             <TextBlock Text="Start Time:" FontWeight="SemiBold" FontSize="14" Foreground="#A1A1B3" Margin="0,5"/>
-            <DatePicker SelectedDate="{Binding StartTime}" Margin="0,5,0,15" Background="#3E3E5E" Foreground="#FFFFFF" BorderBrush="#565678"/>
+            <DatePicker SelectedDate="{Binding StartTime}" Margin="0,5,0,15" Background="#FFFFFF" Foreground="#000000" BorderBrush="#565678"/>
 
             <!-- End Time -->
             <TextBlock Text="End Time:" FontWeight="SemiBold" FontSize="14" Foreground="#A1A1B3" Margin="0,5"/>
-            <DatePicker SelectedDate="{Binding EndTime}" Margin="0,5,0,15" Background="#3E3E5E" Foreground="#FFFFFF" BorderBrush="#565678"/>
+            <DatePicker SelectedDate="{Binding EndTime}" Margin="0,5,0,15" Background="#FFFFFF" Foreground="#000000" BorderBrush="#565678"/>
 
             <!-- Upload Image -->
             <TextBlock Text="Product Image:" FontWeight="SemiBold" FontSize="14" Foreground="#A1A1B3" Margin="0,5"/>

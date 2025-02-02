@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -22,6 +23,9 @@ namespace BidUp_App.ViewModels
             UploadImageCommand = new RelayCommand(UploadImage);
             AddAuctionCommand = new RelayCommand(AddAuction);
             CancelCommand = new RelayCommand(Cancel);
+
+            // Încarcă categoriile din baza de date
+            LoadCategories();
         }
 
         // Properties
@@ -67,10 +71,30 @@ namespace BidUp_App.ViewModels
             set => SetProperty(ref _productImagePath, value);
         }
 
+        private ObservableCollection<Category> _categories;
+        public ObservableCollection<Category> Categories
+        {
+            get => _categories;
+            set => SetProperty(ref _categories, value);
+        }
+
+        private int? _selectedCategoryID;
+        public int? SelectedCategoryID
+        {
+            get => _selectedCategoryID;
+            set => SetProperty(ref _selectedCategoryID, value);
+        }
+
         // Commands
         public ICommand UploadImageCommand { get; }
         public ICommand AddAuctionCommand { get; }
         public ICommand CancelCommand { get; }
+
+        private void LoadCategories()
+        {
+            var categories = _dbContext.Categories.ToList();
+            Categories = new ObservableCollection<Category>(categories);
+        }
 
         private void UploadImage()
         {
@@ -91,7 +115,7 @@ namespace BidUp_App.ViewModels
             {
                 // Validate fields
                 if (string.IsNullOrEmpty(ProductName) || string.IsNullOrEmpty(StartingPrice) ||
-                    !StartTime.HasValue || !EndTime.HasValue)
+                    !StartTime.HasValue || !EndTime.HasValue || !SelectedCategoryID.HasValue)
                 {
                     MessageBox.Show("Please fill in all required fields.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -115,7 +139,7 @@ namespace BidUp_App.ViewModels
                     ProductName = ProductName,
                     Description = Description,
                     ProductImagePath = ProductImagePath,
-                    Category = "Default",
+                    CategoryID = SelectedCategoryID.Value, // Legătură cu categoria
                     CreationDate = DateTime.Now,
                     SellerID = _sellerId
                 };

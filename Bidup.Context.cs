@@ -27,9 +27,11 @@ namespace BidUp_App
     
         public virtual DbSet<Auction> Auctions { get; set; }
         public virtual DbSet<Card> Cards { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<UserNotification> UserNotifications { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
     }

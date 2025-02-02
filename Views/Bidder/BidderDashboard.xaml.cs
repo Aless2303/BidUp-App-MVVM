@@ -13,5 +13,6 @@ namespace BidUp_App.Views.Bidder
             // Setăm DataContext pentru a lega View-ul de ViewModel
             DataContext = new BidderDashboardViewModel(user);
         }
+
     }
 }

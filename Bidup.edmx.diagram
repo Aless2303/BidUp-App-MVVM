@@ -4,21 +4,26 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="898646f56ea14db6a3e323f3fc4c6b2e" Name="Diagram1">
-        <EntityTypeShape EntityType="BidUpModel.Auction" Width="1.5" PointX="5.25" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="BidUpModel.Card" Width="1.5" PointX="3" PointY="9.125" IsExpanded="true" />
+      <Diagram DiagramId="0b2eead2c51142f1a9c14276e31019d7" Name="Diagram1">
+        <EntityTypeShape EntityType="BidUpModel.Auction" Width="1.5" PointX="3" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="BidUpModel.Card" Width="1.5" PointX="3" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="BidUpModel.Category" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="BidUpModel.Log" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="BidUpModel.Notification" Width="1.5" PointX="7.5" PointY="8.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="BidUpModel.Product" Width="1.5" PointX="3" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="BidUpModel.Notification" Width="1.5" PointX="5.25" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BidUpModel.Product" Width="1.5" PointX="6" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BidUpModel.UserNotification" Width="1.5" PointX="8.5" PointY="6" IsExpanded="true" />
         <EntityTypeShape EntityType="BidUpModel.User" Width="1.5" PointX="0.75" PointY="6.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="BidUpModel.Wallet" Width="1.5" PointX="3" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BidUpModel.Wallet" Width="1.5" PointX="3" PointY="18" IsExpanded="true" />
         <AssociationConnector Association="BidUpModel.FK__Auctions__Curren__6FE99F9F" ManuallyRouted="false" />
         <AssociationConnector Association="BidUpModel.FK__Auctions__Produc__71D1E811" ManuallyRouted="false" />
         <AssociationConnector Association="BidUpModel.FK__Auctions__Seller__70DDC3D8" ManuallyRouted="false" />
         <AssociationConnector Association="BidUpModel.FK_Notifications_Auctions" ManuallyRouted="false" />
         <AssociationConnector Association="BidUpModel.FK__Cards__OwnerUser__4BAC3F29" ManuallyRouted="false" />
+        <AssociationConnector Association="BidUpModel.FK_Products_Categories" ManuallyRouted="false" />
         <AssociationConnector Association="BidUpModel.FK_Notifications_Bidders" ManuallyRouted="false" />
+        <AssociationConnector Association="BidUpModel.FK_UserNotifications_Notifications" ManuallyRouted="false" />
         <AssociationConnector Association="BidUpModel.FK__Products__Seller__5629CD9C" ManuallyRouted="false" />
+        <AssociationConnector Association="BidUpModel.FK_UserNotifications_Users" ManuallyRouted="false" />
         <AssociationConnector Association="BidUpModel.FK_Wallet_User" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>

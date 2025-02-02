@@ -48,7 +48,6 @@ namespace BidUp_App.ViewModels
         public string FullName => _user.m_fullName;
         public string Email => _user.m_email;
         public string DateOfBirth => _user.m_BirthDate.ToString("d");
-        public string Role => _user.m_role;
 
         public bool IsCardVisible
         {

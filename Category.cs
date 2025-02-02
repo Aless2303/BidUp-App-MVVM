@@ -12,24 +12,18 @@ namespace BidUp_App
     using System;
     using System.Collections.Generic;
     
-    public partial class Notification
+    public partial class Category
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Notification()
+        public Category()
         {
-            this.UserNotifications = new HashSet<UserNotification>();
+            this.Products = new HashSet<Product>();
         }
     
-        public int NotificationID { get; set; }
-        public int BidderID { get; set; }
-        public int AuctionID { get; set; }
-        public string Message { get; set; }
-        public System.DateTime CreatedAt { get; set; }
-        public bool IsRead { get; set; }
+        public int CategoryID { get; set; }
+        public string Name { get; set; }
     
-        public virtual Auction Auction { get; set; }
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserNotification> UserNotifications { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

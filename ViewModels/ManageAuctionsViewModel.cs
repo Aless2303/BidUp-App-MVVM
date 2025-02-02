@@ -6,6 +6,8 @@ using System.Windows.Input;
 using BidUp_App.Models;
 using System.Data.Entity;
 using BidUp_App.Models.Users;
+using System.Net;
+using System.Net.Mail;
 
 namespace BidUp_App.ViewModels
 {
@@ -95,6 +97,84 @@ namespace BidUp_App.ViewModels
                 auction.AuctionStatus = "Accepted";
                 _dbContext.SaveChanges();
                 LoadAuctions();
+
+
+                NotifyAllUsersAboutNewAuction(auction);
+            }
+
+
+        }
+
+
+
+        private void NotifyAllUsersAboutNewAuction(Auction newAuction)
+        {
+            var notification = new Notification
+            {
+                AuctionID = newAuction.AuctionID,
+                Message = $"New auction available: {newAuction.ProductName}!",
+                CreatedAt = DateTime.Now,
+                IsRead = false
+            };
+
+            _dbContext.Notifications.Add(notification);
+            _dbContext.SaveChanges();
+
+            var allUsers = _dbContext.Users.ToList();
+            foreach (var user in allUsers)
+            {
+                // Creează notificarea în baza de date
+                var userNotification = new UserNotification
+                {
+                    UserID = user.UserID,
+                    NotificationID = notification.NotificationID,
+                    IsRead = false
+                };
+                _dbContext.UserNotifications.Add(userNotification);
+
+                // Trimite email la utilizator
+                SendEmailNotification(user.Email, newAuction.ProductName);
+            }
+
+            _dbContext.SaveChanges();
+        }
+
+
+
+        private void SendEmailNotification(string toEmail, string productName)
+        {
+            try
+            {
+                var fromAddress = new MailAddress("milea84.am@gmail.com", "BidUp Notifications");
+                var toAddress = new MailAddress(toEmail);
+                const string fromPassword = "avcw aymr kwlc xoxw"; // Folosește o parolă de aplicație pentru Gmail
+                string subject = "New Auction Available!";
+                string body = $"Bună ziua,\n\nUn nou obiect a fost adăugat la licitații.\n\n" +
+                              $"Denumirea obiectului: {productName}\n\n" +
+                              $"Vă dorim succes la licitație!\n\nEchipa BidUp\n";
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+                };
+
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body
+                })
+                {
+                    smtp.Send(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send email to {toEmail}: {ex.Message}");
             }
         }
     }

@@ -66,21 +66,20 @@
                     <TextBlock Text="Birthday DD/MM/YY" FontSize="14" FontWeight="Bold" Foreground="White" Margin="30,0,0,10"/>
                     <StackPanel Orientation="Horizontal" Width="250" Height="25" Margin="0,0,0,0">
                         <!-- Days ComboBox -->
-                                    <ComboBox ItemsSource="{Binding Days}" 
-                          SelectedItem="{Binding BirthDay}" 
-                          Width="60" Margin="0,0,5,0" />
+                        <ComboBox ItemsSource="{Binding Days}" 
+                                  SelectedItem="{Binding BirthDay}" 
+                                  Width="60" Margin="0,0,5,0" />
 
-                                    <!-- Months ComboBox -->
-                                    <ComboBox ItemsSource="{Binding Months}" 
-                          SelectedItem="{Binding BirthMonth}" 
-                          Width="80" Margin="0,0,5,0" />
+                        <!-- Months ComboBox -->
+                        <ComboBox ItemsSource="{Binding Months}" 
+                                  SelectedItem="{Binding BirthMonth}" 
+                                  Width="80" Margin="0,0,5,0" />
 
-                                    <!-- Years ComboBox -->
-                                <ComboBox ItemsSource="{Binding Years}" 
-                          SelectedItem="{Binding BirthYear}" 
-                          Width="90" />
+                        <!-- Years ComboBox -->
+                        <ComboBox ItemsSource="{Binding Years}" 
+                                  SelectedItem="{Binding BirthYear}" 
+                                  Width="90" />
                     </StackPanel>
-
 
                     <!-- Password -->
                     <local:CustomTextBox Text="{Binding Password, Mode=TwoWay}" 
@@ -98,19 +97,17 @@
 
                     <!-- Role -->
                     <ComboBox SelectedValue="{Binding Role}" 
-                          SelectedValuePath="Content"
-                          Width="250" 
-                          Height="40" 
-                          Margin="0,0,0,10" 
-                          Foreground="Gray" 
-                          VerticalContentAlignment="Center" 
-                          HorizontalContentAlignment="Left">
-                            <ComboBoxItem Content="Select Role" IsEnabled="False" />
-                            <ComboBoxItem Content="Bidder" />
-                            <ComboBoxItem Content="Admin" />
-                            <ComboBoxItem Content="Seller" />
+                              SelectedValuePath="Content"
+                              Width="250" 
+                              Height="40" 
+                              Margin="0,0,0,10" 
+                              Foreground="Gray" 
+                              VerticalContentAlignment="Center" 
+                              HorizontalContentAlignment="Left">
+                        <ComboBoxItem Content="Select Role" IsEnabled="False" />
+                        <ComboBoxItem Content="User" />
+                        <ComboBoxItem Content="Admin" />
                     </ComboBox>
-
                 </StackPanel>
 
                 <!-- Card Information Section (Right) -->

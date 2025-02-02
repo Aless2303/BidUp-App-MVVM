@@ -26,6 +26,20 @@
                        Foreground="White" 
                        Margin="0,0,0,20" 
                        HorizontalAlignment="Center"/>
+
+            <!-- ComboBox pentru selectarea categoriei -->
+            <ComboBox x:Name="CategoryComboBox"
+                      Width="150"
+                      Height="30"
+                      Margin="10"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Center"
+                      ItemsSource="{Binding Categories}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="CategoryID"
+                      SelectedValue="{Binding SelectedCategoryId, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedIndex="0">
+            </ComboBox>
         </DockPanel>
 
         <!-- Main Content (Auctions List) -->

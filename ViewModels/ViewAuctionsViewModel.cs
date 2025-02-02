@@ -18,6 +18,19 @@ namespace BidUp_App.ViewModels
         private readonly DispatcherTimer _notificationTimer;
 
         public ObservableCollection<AuctionViewModel> Auctions { get; set; }
+        public ObservableCollection<Category> Categories { get; set; }
+
+        private int _selectedCategoryId;
+        public int SelectedCategoryId
+        {
+            get { return _selectedCategoryId; }
+            set
+            {
+                _selectedCategoryId = value;
+                OnPropertyChanged(nameof(SelectedCategoryId));
+                LoadAuctions(); // Reîncarcă licitațiile atunci când categoria este schimbată
+            }
+        }
 
         public ICommand RefreshCommand { get; }
         public ICommand BidCommand { get; }
@@ -28,6 +41,16 @@ namespace BidUp_App.ViewModels
             _dbContext = new BidUpEntities();
             _currentBidderId = -1; // ID implicit
             Auctions = new ObservableCollection<AuctionViewModel>();
+            Categories = new ObservableCollection<Category>();
+
+
+            RefreshCommand = new RelayCommand(RefreshAuctions);
+            BidCommand = new RelayCommand<int>(BidOnAuction);
+
+            LoadCategories();
+            LoadAuctions();
+            CheckNotifications();
+
         }
 
         public ViewAuctionsViewModel(int currentBidderId)
@@ -40,6 +63,7 @@ namespace BidUp_App.ViewModels
             RefreshCommand = new RelayCommand(RefreshAuctions);
             BidCommand = new RelayCommand<int>(BidOnAuction);
 
+            LoadCategories();
             LoadAuctions();
             CheckNotifications();
 
@@ -60,13 +84,40 @@ namespace BidUp_App.ViewModels
             _notificationTimer.Start();
         }
 
+        private void LoadCategories()
+        {
+            var categoriesFromDb = _dbContext.Categories.ToList();
+            if (Categories == null)
+            {
+                Categories = new ObservableCollection<Category>();
+            }
+            Categories.Clear();
+            foreach (var category in categoriesFromDb)
+            {
+                Categories.Add(category);
+            }
+
+            // Adaugă o categorie default "Toate"
+            Categories.Insert(0, new Category { CategoryID = -1, Name = "Toate" });
+            SelectedCategoryId = -1; // Setează categoria implicită
+        }
+
         private void LoadAuctions()
         {
             // Preluăm toate licitațiile ACCEPTATE din baza de date care sunt active
-            var auctionsFromDb = _dbContext.Auctions
-                .Where(a => a.AuctionStatus == "Accepted" && a.EndTime > DateTime.Now && a.IsClosed == false) // Filtrare după Accepted
-                .AsNoTracking()
-                .ToList(); // Executăm query-ul aici pentru a aduce datele în memorie
+            var auctionsQuery = _dbContext.Auctions
+                    .Where(a => a.AuctionStatus == "Accepted" &&
+                                a.EndTime > DateTime.Now &&
+                                a.IsClosed == false &&
+                                a.SellerID != _currentBidderId); // Excludem licitațiile proprii
+
+            // Filtrează după categorie dacă este selectată o categorie specifică
+            if (SelectedCategoryId != -1)
+            {
+                auctionsQuery = auctionsQuery.Where(a => a.Product.CategoryID == SelectedCategoryId);
+            }
+
+            var auctionsFromDb = auctionsQuery.AsNoTracking().ToList();
 
             // Transformăm datele într-un ViewModel
             var auctions = auctionsFromDb.Select(a => new AuctionViewModel
@@ -86,6 +137,7 @@ namespace BidUp_App.ViewModels
 
             // Curățăm și actualizăm lista observabilă
             Auctions.Clear();
+
             foreach (var auction in auctions)
             {
                 Auctions.Add(auction);
